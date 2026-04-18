@@ -1,4 +1,4 @@
-# Flower_Platform
+# flower-website
 
 Next.js tabanli cicekci e-ticaret MVP projesi.
 
