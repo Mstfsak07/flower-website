@@ -5,7 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Flower2, Menu, PhoneCall, Shield, ShoppingBag, Sparkles, X } from "lucide-react";
 
+import { useAuth } from "@/components/providers/auth-provider";
 import { useStore } from "@/components/providers/store-provider";
+import { isAdminRole } from "@/lib/auth";
 import { siteSettings } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +20,13 @@ const links = [
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { isAuthenticated, logout, user } = useAuth();
   const { cart, hydrated } = useStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const count = cart.reduce((total, item) => total + item.quantity, 0);
+  const adminLoggedIn = isAdminRole(user?.role);
+  const accountHref = adminLoggedIn ? "/admin" : "/hesabim";
+  const accountLabel = adminLoggedIn ? "Yonetim" : "Hesabim";
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -75,14 +81,37 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/45 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)] transition-all hover:bg-white/70 hover:text-[var(--color-ink)] lg:inline-flex"
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <Shield className="size-3.5" />
-            Yonetim
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link
+                className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/45 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)] transition-all hover:bg-white/70 hover:text-[var(--color-ink)] lg:inline-flex"
+                href={accountHref}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Shield className="size-3.5" />
+                {accountLabel}
+              </Link>
+              <button
+                className="hidden rounded-full border border-white/50 bg-white/45 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)] transition-all hover:bg-white/70 hover:text-[var(--color-ink)] lg:inline-flex"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  logout().catch(() => undefined);
+                }}
+                type="button"
+              >
+                Cikis
+              </button>
+            </>
+          ) : (
+            <Link
+              className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/45 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-muted)] transition-all hover:bg-white/70 hover:text-[var(--color-ink)] lg:inline-flex"
+              href="/giris"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Shield className="size-3.5" />
+              Giris
+            </Link>
+          )}
           <a
             className="hidden items-center gap-2 rounded-full border border-white/50 bg-white/40 px-4 py-2 text-sm font-medium text-[var(--color-ink)] backdrop-blur-md transition-all hover:bg-white/70 lg:flex"
             href={`https://wa.me/${siteSettings.whatsapp.replace(/\D/g, "")}`}
@@ -179,12 +208,24 @@ export function SiteHeader() {
               </a>
               <Link
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-line)] bg-white px-4 py-3 text-sm font-medium text-[var(--color-muted)]"
-                href="/admin"
+                href={isAuthenticated ? accountHref : "/giris"}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <Shield className="size-4" />
-                Yonetici Girisi
+                {isAuthenticated ? accountLabel : "Giris Yap"}
               </Link>
+              {isAuthenticated ? (
+                <button
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-[var(--color-line)] bg-white px-4 py-3 text-sm font-medium text-[var(--color-muted)]"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    logout().catch(() => undefined);
+                  }}
+                  type="button"
+                >
+                  Cikis Yap
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

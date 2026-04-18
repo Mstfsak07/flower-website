@@ -1,4 +1,15 @@
 export type UserRole = "CUSTOMER" | "ADMIN";
+export type AuthUser = {
+  name: string;
+  email: string;
+  phone?: string;
+  role: UserRole;
+};
+
+export type AuthSession = {
+  user: AuthUser;
+  issuedAt: string;
+};
 export type PaymentMethod = "CARD" | "BANK_TRANSFER" | "CASH_ON_DELIVERY";
 export type PaymentStatus = "UNPAID" | "PAID" | "FAILED" | "REFUNDED";
 export type OrderStatus =

@@ -1,15 +1,20 @@
 import Link from "next/link";
 
+import { readAuthSession } from "@/lib/auth-server";
 import { seedOrders } from "@/lib/data";
 
-export default function AccountPage() {
+export default async function AccountPage() {
+  const session = await readAuthSession();
+
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="grid gap-6 lg:grid-cols-[20rem_1fr]">
         <aside className="panel p-5">
           <div className="space-y-2">
             <h1 className="font-serif text-3xl text-[var(--color-ink)]">Hesabim</h1>
-            <p className="text-sm text-[var(--color-muted)]">Demo musteri paneli</p>
+            <p className="text-sm text-[var(--color-muted)]">
+              {session?.user.name} olarak oturum acildi
+            </p>
           </div>
           <div className="mt-5 space-y-2 text-sm">
             <Link className="block rounded-2xl bg-[var(--color-card)] px-4 py-3" href="/hesabim/siparisler">

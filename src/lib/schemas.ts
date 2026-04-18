@@ -7,6 +7,30 @@ export const contactSchema = z.object({
   message: z.string().min(10),
 });
 
+export const authLoginSchema = z.object({
+  email: z.string().email().max(254).trim().toLowerCase(),
+  password: z.string().min(6).max(128),
+  redirectTo: z.string().max(256).optional(),
+});
+
+export const authRegisterSchema = z
+  .object({
+    name: z.string().min(2).max(120).trim(),
+    email: z.string().email().max(254).trim().toLowerCase(),
+    phone: z.string().min(10).max(20).trim().optional(),
+    password: z
+      .string()
+      .min(8)
+      .max(128)
+      .regex(/[A-Za-z]/, "Sifre en az bir harf icermeli.")
+      .regex(/[0-9]/, "Sifre en az bir rakam icermeli."),
+    confirmPassword: z.string().min(8).max(128),
+  })
+  .refine((input) => input.password === input.confirmPassword, {
+    message: "Sifreler eslesmiyor.",
+    path: ["confirmPassword"],
+  });
+
 // ── Admin schemas ─────────────────────────────────────────────────────────────
 
 export const adminProductSchema = z.object({

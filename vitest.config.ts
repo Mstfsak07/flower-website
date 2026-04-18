@@ -8,6 +8,12 @@ export default defineConfig({
     },
   },
   test: {
-    exclude: ["tests/e2e/**", "node_modules/**", ".next/**"],
+    exclude: [
+      "tests/e2e/**",
+      "**/tests/e2e/**",
+      "Flower_Platform/**",
+      "node_modules/**",
+      ".next/**",
+    ],
   },
 });

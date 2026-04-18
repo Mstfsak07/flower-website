@@ -12,6 +12,7 @@
  */
 
 import { NextResponse } from "next/server";
+import { readAuthSessionFromRequest } from "@/lib/auth-server";
 import { env } from "@/lib/env";
 
 function readBearerToken(request: Pick<Request, "headers">) {
@@ -20,6 +21,11 @@ function readBearerToken(request: Pick<Request, "headers">) {
 }
 
 export function isAdminRequestAuthorized(request: Pick<Request, "headers">) {
+  const session = readAuthSessionFromRequest(request);
+  if (session?.user.role === "ADMIN") {
+    return true;
+  }
+
   const secret = env.ADMIN_SECRET;
 
   if (!secret) {
