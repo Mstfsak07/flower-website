@@ -1,0 +1,287 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  phone        String?
+  passwordHash String?
+  role         UserRole  @default(CUSTOMER)
+  addresses    Address[]
+  orders       Order[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  fullName     String
+  phone        String
+  city         String
+  district     String
+  neighborhood String
+  addressLine  String
+  postalCode   String?
+  latitude     Float?
+  longitude    Float?
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id                  String           @id @default(cuid())
+  name                String
+  slug                String           @unique
+  shortDescription    String?
+  description         String?
+  sku                 String           @unique
+  basePrice           Decimal          @db.Decimal(10, 2)
+  compareAtPrice      Decimal?         @db.Decimal(10, 2)
+  costPrice           Decimal?         @db.Decimal(10, 2)
+  isActive            Boolean          @default(true)
+  isFeatured          Boolean          @default(false)
+  stockTracking       Boolean          @default(true)
+  stockQuantity       Int              @default(0)
+  minPreparationHours Int              @default(2)
+  categoryId          String
+  category            Category         @relation(fields: [categoryId], references: [id])
+  images              ProductImage[]
+  variants            ProductVariant[]
+  options             ProductOption[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  altText   String?
+  sortOrder Int     @default(0)
+}
+
+model ProductVariant {
+  id            String  @id @default(cuid())
+  productId     String
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name          String
+  value         String
+  priceDelta    Decimal @db.Decimal(10, 2)
+  stockQuantity Int     @default(0)
+  sku           String?
+  isActive      Boolean @default(true)
+}
+
+model ProductOption {
+  id         String               @id @default(cuid())
+  productId  String
+  product    Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name       String
+  type       ProductOptionType
+  isRequired Boolean              @default(false)
+  values     ProductOptionValue[]
+}
+
+model ProductOptionValue {
+  id         String        @id @default(cuid())
+  optionId   String
+  option     ProductOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  value      String
+  priceDelta Decimal       @db.Decimal(10, 2)
+}
+
+model Order {
+  id                  String           @id @default(cuid())
+  orderNumber         String           @unique
+  userId              String?
+  user                User?            @relation(fields: [userId], references: [id])
+  status              OrderStatus      @default(PENDING)
+  paymentStatus       PaymentStatus    @default(UNPAID)
+  paymentMethod       PaymentMethod
+  subtotal            Decimal          @db.Decimal(10, 2)
+  discountTotal       Decimal          @db.Decimal(10, 2)
+  deliveryFee         Decimal          @db.Decimal(10, 2)
+  grandTotal          Decimal          @db.Decimal(10, 2)
+  customerName        String
+  customerPhone       String
+  customerEmail       String
+  recipientName       String
+  recipientPhone      String
+  deliveryDate        DateTime
+  deliverySlot        String
+  cardMessage         String?
+  note                String?
+  addressSnapshotJson Json
+  couponCode          String?
+  items               OrderItem[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+}
+
+model OrderItem {
+  id                  String  @id @default(cuid())
+  orderId             String
+  order               Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId           String?
+  productName         String
+  variantName         String?
+  quantity            Int
+  unitPrice           Decimal @db.Decimal(10, 2)
+  totalPrice          Decimal @db.Decimal(10, 2)
+  note                String?
+  selectedOptionsJson Json?
+}
+
+model Coupon {
+  id                String     @id @default(cuid())
+  code              String     @unique
+  type              CouponType
+  value             Decimal    @db.Decimal(10, 2)
+  minOrderAmount    Decimal    @db.Decimal(10, 2)
+  maxDiscountAmount Decimal?   @db.Decimal(10, 2)
+  usageLimit        Int?
+  usedCount         Int        @default(0)
+  startsAt          DateTime
+  endsAt            DateTime
+  isActive          Boolean    @default(true)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+}
+
+model DeliveryZone {
+  id               String   @id @default(cuid())
+  name             String
+  city             String
+  district         String
+  fee              Decimal  @db.Decimal(10, 2)
+  minDeliveryHours Int
+  sameDayAvailable Boolean  @default(false)
+  cutoffHour       Int
+  isActive         Boolean  @default(true)
+}
+
+model WholesaleInquiry {
+  id          String        @id @default(cuid())
+  companyName String?
+  fullName    String
+  phone       String
+  email       String
+  eventType   String
+  eventDate   DateTime
+  quantity    Int
+  budget      Decimal       @db.Decimal(10, 2)
+  city        String
+  district    String
+  details     String
+  status      InquiryStatus @default(NEW)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model ContentPage {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  content        String
+  seoTitle       String?
+  seoDescription String?
+  isPublished    Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model SiteSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model HeroSlide {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String?
+  imageUrl  String
+  ctaText   String?
+  ctaUrl    String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+}
+
+model VisualExperienceConfig {
+  id          String  @id @default(cuid())
+  key         String  @unique
+  value       String
+  description String?
+}
+
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum ProductOptionType {
+  TEXT
+  SELECT
+  BOOLEAN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CARD
+  CASH_ON_DELIVERY
+  BANK_TRANSFER
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+enum InquiryStatus {
+  NEW
+  REVIEWING
+  QUOTED
+  WON
+  LOST
+}

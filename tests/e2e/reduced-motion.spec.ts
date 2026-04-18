@@ -1,0 +1,8 @@
+import { expect, test } from "@playwright/test";
+
+test("homepage remains usable with reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await expect(page.getByText("Yeni Koleksiyon")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Kurumsal Teklif Al" }).first()).toBeVisible();
+});

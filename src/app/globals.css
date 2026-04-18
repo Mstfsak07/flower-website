@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-surface: #fdfaf8;
+  --color-card: #fff5f0;
+  --color-glass: rgba(255, 255, 255, 0.4);
+  --color-glass-strong: rgba(255, 255, 255, 0.75);
+  --color-line: rgba(82, 57, 62, 0.08);
+  --color-ink: #2a1f22;
+  --color-muted: #6f5d62;
+  --color-accent: #c45b6d;
+  --color-accent-dark: #a34252;
+  --color-leaf: #6b8a67;
+  --color-lavender: #d0c0dc;
+  --color-peach: #f2cdb8;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: var(--font-sans), sans-serif;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.font-serif {
+  font-family: var(--font-display), serif;
+  letter-spacing: -0.01em;
+}
+
+.panel {
+  border: 1px solid var(--color-line);
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 20px 60px -20px rgba(71, 46, 56, 0.08);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: linear-gradient(135deg, var(--color-glass-strong), var(--color-glass));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow:
+    0 30px 60px -20px rgba(71, 46, 56, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.soft-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+  opacity: 0.7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
