@@ -1,0 +1,17 @@
+substitutions:
+  _AR_HOST: europe-west1-docker.pkg.dev
+  _AR_REPO: cicekci-platform
+  _IMAGE_NAME: cicekci-web
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - Dockerfile
+      - -t
+      - ${_AR_HOST}/$PROJECT_ID/${_AR_REPO}/${_IMAGE_NAME}:latest
+      - .
+
+images:
+  - ${_AR_HOST}/$PROJECT_ID/${_AR_REPO}/${_IMAGE_NAME}:latest

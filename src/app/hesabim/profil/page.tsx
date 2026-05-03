@@ -1,11 +1,5 @@
-import { ContentPageView } from "@/components/content-page-view";
+import { redirect } from "next/navigation";
 
-export default function AccountProfilePage() {
-  return (
-    <ContentPageView
-      title="Profil"
-      description="Iletisim bilgileri ve hesap tercihleri."
-      content="Musteri ad soyad, telefon, e-posta ve bilgilendirme tercihleri bu alanda yonetilecek. MVP'de demo gorunum olarak birakildi."
-    />
-  );
+export default async function AccountProfilePage() {
+  redirect("/hesabim");
 }

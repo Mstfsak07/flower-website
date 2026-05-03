@@ -10,19 +10,20 @@ import type {
   VisualExperienceConfig,
   WholesaleInquiry,
 } from "@/lib/types";
+import type { Locale } from "@/lib/locale";
 
 export const siteSettings: SiteSettings = {
-  storeName: "Luna Cicek",
+  storeName: "Iris Atalier",
   phone: "0 (532) 456 78 90",
   whatsapp: "+905324567890",
-  address: "Bagdat Caddesi No: 112, Caddebostan / Istanbul",
-  instagram: "https://instagram.com/lunacicek",
-  facebook: "https://facebook.com/lunacicek",
+  address: "Konyaalti / Antalya",
+  instagram: "https://instagram.com/irisatalier",
+  facebook: "https://facebook.com/irisatalier",
   deliveryCutoffHour: 15,
   defaultDeliveryFee: 120,
-  seoTitle: "Luna Cicek | Yerel cicekciden uygun fiyatli siparis",
+  seoTitle: "Iris Atalier | Yerel cicekciden premium siparis deneyimi",
   seoDescription:
-    "Buket, tekli gul, saksi cicegi ve toptan etkinlik cicekleri icin yerel cicekciden dogrudan siparis.",
+    "Buket, premium aranjman, saksi cicegi ve etkinlik tasarimlari icin Iris Atalier'den dogrudan siparis.",
 };
 
 export const heroSlides: HeroSlide[] = [
@@ -160,6 +161,170 @@ export const categories: Category[] = [
   },
 ];
 
+const categoryTranslations: Partial<Record<Category["slug"], { name: string; description: string }>> = {
+  "tekli-guller": {
+    name: "Single Roses",
+    description: "Single rose options for minimal, clean, and affordable gifting.",
+  },
+  "mini-buketler": {
+    name: "Mini Bouquets",
+    description: "Affordable mini bouquets for everyday deliveries and quick surprises.",
+  },
+  "orta-boy-buketler": {
+    name: "Medium Bouquets",
+    description: "Balanced bouquet designs for birthdays and celebrations.",
+  },
+  "premium-buketler": {
+    name: "Premium Bouquets",
+    description: "Richer designs and elevated presentations for meaningful occasions.",
+  },
+  "saksi-cicekleri": {
+    name: "Potted Plants",
+    description: "Easy-care potted gifts for those who want something longer lasting.",
+  },
+  "toptan-etkinlik-cicekleri": {
+    name: "Wholesale Event Flowers",
+    description: "Bulk floral sets for venues, events, and corporate purchases.",
+  },
+};
+
+const productTranslations: Partial<Record<Product["slug"], Pick<Product, "name" | "shortDescription" | "description">>> = {
+  "gul-buketi": {
+    name: "Rose Bouquet",
+    shortDescription: "A classic red rose bouquet with a clean and elegant presentation.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "pembe-gul-buketi": {
+    name: "Pink Rose Bouquet",
+    shortDescription: "A romantic and elegant bouquet prepared with soft pink roses.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "karanfil-buketi": {
+    name: "Carnation Bouquet",
+    shortDescription: "A fresh and vibrant carnation bouquet, durable and graceful.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "papatya-buketi": {
+    name: "Daisy Bouquet",
+    shortDescription: "A bouquet carefully arranged with fresh field daisies.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "sardunya-buketi": {
+    name: "Geranium Bouquet",
+    shortDescription: "A special geranium arrangement that stands out with warm tones.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "begonya-buketi": {
+    name: "Begonia Bouquet",
+    shortDescription: "A begonia bouquet highlighted by elegant leaves and refined tones.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "lavanta-buketi": {
+    name: "Lavender Bouquet",
+    shortDescription: "A fragrant fresh lavender bouquet with a calming presence.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "petunya-buketi": {
+    name: "Petunia Bouquet",
+    shortDescription: "A cheerful bouquet built from lively petunia blooms.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "kalanso-buketi": {
+    name: "Kalanchoe Bouquet",
+    shortDescription: "A kalanchoe arrangement with compact, vivid blossoms.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "menekse-buketi": {
+    name: "Violet Bouquet",
+    shortDescription: "A nostalgic bouquet arranged with delicate violets.",
+    description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+};
+
+export function getLocalizedCategory(category: Category, locale: Locale): Category {
+  if (locale === "tr") {
+    return category;
+  }
+
+  const translation = categoryTranslations[category.slug];
+  if (!translation) {
+    return category;
+  }
+
+  return {
+    ...category,
+    ...translation,
+  };
+}
+
+export function getLocalizedProduct(product: Product, locale: Locale): Product {
+  if (locale === "tr") {
+    return product;
+  }
+
+  const translation = productTranslations[product.slug];
+  const name = translation?.name ?? product.name;
+
+  return {
+    ...product,
+    ...translation,
+    badges: product.badges?.map((badge) => translateProductBadge(badge)),
+    images: product.images.map((image) => ({
+      ...image,
+      altText: name,
+    })),
+    options: product.options.map((option) => ({
+      ...option,
+      name: translateProductOptionName(option.name),
+      values: option.values?.map((value) => ({
+        ...value,
+        value: translateProductOptionValue(value.value),
+      })),
+    })),
+    variants: product.variants.map((variant) => ({
+      ...variant,
+      name: translateProductOptionName(variant.name),
+      value: translateProductOptionValue(variant.value),
+    })),
+  };
+}
+
+function translateProductBadge(value: string) {
+  const translations: Record<string, string> = {
+    "Cok Satan": "Best Seller",
+    Gunluk: "Everyday",
+    Klasik: "Classic",
+    Mevsimsel: "Seasonal",
+    "Uzun Omurlu": "Long Lasting",
+    Zarif: "Elegant",
+  };
+
+  return translations[value] ?? value;
+}
+
+function translateProductOptionName(value: string) {
+  const translations: Record<string, string> = {
+    Boyut: "Size",
+    "Kart Ekle": "Add Card",
+    "Kurdele Rengi": "Ribbon Color",
+  };
+
+  return translations[value] ?? value;
+}
+
+function translateProductOptionValue(value: string) {
+  const translations: Record<string, string> = {
+    "Ada cay yesili": "Sage Green",
+    Buyuk: "Large",
+    "Gul kurusu": "Dusty Rose",
+    Krem: "Cream",
+    Kucuk: "Small",
+    Orta: "Medium",
+  };
+
+  return translations[value] ?? value;
+}
+
 function product(
   id: string,
   name: string,
@@ -171,6 +336,8 @@ function product(
   shortDescription: string,
   badges: string[],
 ): Product {
+  const detailImageUrl = imageUrl.includes("?") ? `${imageUrl}&sat=-15` : imageUrl;
+
   return {
     id,
     name,
@@ -183,7 +350,7 @@ function product(
     compareAtPrice,
     costPrice: Math.round(basePrice * 0.62),
     isActive: true,
-    isFeatured: id === "p1" || id === "p3" || id === "p5" || id === "p8",
+    isFeatured: ["p1", "p6", "p10", "p12"].includes(id),
     stockTracking: true,
     stockQuantity: 12 + Number(id.replace("p", "")),
     minPreparationHours: 2,
@@ -197,7 +364,7 @@ function product(
       },
       {
         id: `${id}-img-2`,
-        imageUrl: `${imageUrl}&sat=-15`,
+        imageUrl: detailImageUrl,
         altText: `${name} detay`,
         sortOrder: 2,
       },
@@ -258,135 +425,113 @@ function product(
 export const products: Product[] = [
   product(
     "p1",
-    "Yumusak Pembe Mini Buket",
-    "yumusak-pembe-mini-buket",
+    "Gül Buketi",
+    "gul-buketi",
     "cat-2",
-    690,
-    790,
-    "https://images.unsplash.com/photo-1526397751294-331021109fbd?auto=format&fit=crop&w=900&q=80",
-    "Pudra tonlarinda gul ve cipso ile gunluk surprizler icin hafif bir secim.",
-    ["Ayni Gun", "Cok Satan"],
+    450,
+    undefined,
+    "/products/rose-classic.jpg",
+    "Standart kırmızı gül buketi, sade ve şık bir gönderim seçeneği.",
+    ["Cok Satan", "Klasik"],
+  ),
+  product(
+    "p10",
+    "Pembe Gül Buketi",
+    "pembe-gul-buketi",
+    "cat-2",
+    480,
+    undefined,
+    "/products/rose-pastel.jpg",
+    "Zarif pembe güllerden hazırlanmış romantik ve şık buket.",
+    ["Zarif", "Mevsimsel"],
   ),
   product(
     "p2",
-    "Kirmizi Gul Uclusu",
-    "kirmizi-gul-uclusu",
-    "cat-1",
-    490,
+    "Karanfil Buketi",
+    "karanfil-buketi",
+    "cat-2",
+    250,
     undefined,
-    "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=900&q=80",
-    "Kisa notlu, sade ve ekonomik kirmizi gul gonderimi.",
-    ["Ekonomik"],
+    "/products/mixed-delicate.jpg",
+    "Taze ve canlı renkli karanfil buketi, dayanıklı ve zarif.",
+    ["Gunluk"],
   ),
   product(
     "p3",
-    "Beyaz Zarafet Buketi",
-    "beyaz-zarafet-buketi",
-    "cat-3",
-    980,
-    1120,
-    "https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?auto=format&fit=crop&w=900&q=80",
-    "Lisyantus ve beyaz gul karisimiyla temiz, sakin bir sunum.",
-    ["Yeni"],
+    "Papatya Buketi",
+    "papatya-buketi",
+    "cat-2",
+    300,
+    undefined,
+    "/products/white-daisies.jpg",
+    "Doğal ve taze kır papatyalarından özenle hazırlanmış buket.",
+    ["Klasik"],
   ),
   product(
     "p4",
-    "Sampanya Ton Premium Tasarim",
-    "sampanya-ton-premium-tasarim",
-    "cat-4",
-    1590,
-    1790,
-    "https://images.unsplash.com/photo-1520763185298-1b434c919102?auto=format&fit=crop&w=900&q=80",
-    "Gosterisli sunum arayanlar icin premium dokulu ozel tasarim.",
-    ["Premium"],
+    "Sardunya Buketi",
+    "sardunya-buketi",
+    "cat-2",
+    350,
+    undefined,
+    "/products/rose-soft.jpg",
+    "Sıcak renkleriyle dikkat çeken özel sardunya aranjmanı.",
+    ["Mevsimsel"],
   ),
   product(
     "p5",
-    "Baris Zambagi Saksisi",
-    "baris-zambagi-saksisi",
-    "cat-5",
-    890,
+    "Begonya Buketi",
+    "begonya-buketi",
+    "cat-2",
+    380,
     undefined,
-    "https://images.unsplash.com/photo-1487537023671-8dce1a785863?auto=format&fit=crop&w=900&q=80",
-    "Uzun omurlu, ofis ve ev icin bakimi kolay saksili bitki.",
-    ["Uzun Omurlu"],
+    "/products/mixed-delicate.jpg",
+    "Zarif yaprakları ve renkleriyle öne çıkan begonya buketi.",
+    ["Zarif"],
   ),
   product(
     "p6",
-    "Etkinlik Masasi Cicek Seti",
-    "etkinlik-masasi-cicek-seti",
-    "cat-6",
-    2450,
-    2850,
-    "https://images.unsplash.com/photo-1455656678494-4d1b5f3e7ad1?auto=format&fit=crop&w=900&q=80",
-    "Toplu alimlar icin standart olculu masa ustu cicek seti.",
-    ["Toptan"],
+    "Lavanta Buketi",
+    "lavanta-buketi",
+    "cat-2",
+    420,
+    undefined,
+    "/products/lavender-bouquet.jpg",
+    "Mis kokulu, sakinleştirici etkiye sahip taze lavanta buketi.",
+    ["Uzun Omurlu", "Zarif"],
   ),
   product(
     "p7",
-    "Mini Lale Demeti",
-    "mini-lale-demeti",
+    "Petunya Buketi",
+    "petunya-buketi",
     "cat-2",
-    720,
+    340,
     undefined,
-    "https://images.unsplash.com/photo-1494336934272-fd6f3d63d5e3?auto=format&fit=crop&w=900&q=80",
-    "Mevsimsel lale renkleriyle yumusak ve zarif bir jest.",
+    "/products/violet-cluster.jpg",
+    "Canlı petunya çiçeklerinden oluşan renkli ve neşeli buket.",
     ["Mevsimsel"],
   ),
   product(
     "p8",
-    "Somon Gul Kutusu",
-    "somon-gul-kutusu",
-    "cat-4",
-    1380,
-    1510,
-    "https://images.unsplash.com/photo-1468327768560-75b778cbb551?auto=format&fit=crop&w=900&q=80",
-    "Kutulu premium sunumla daha duzenli ve kurumsal bir hediye secenegi.",
-    ["Kurumsal"],
+    "Kalanşo Buketi",
+    "kalanso-buketi",
+    "cat-2",
+    280,
+    undefined,
+    "/products/rose-soft.jpg",
+    "Küçük ve canlı çiçekleriyle kalanşo (kalanchoe) aranjmanı.",
+    ["Uzun Omurlu"],
   ),
   product(
     "p9",
-    "Lavanta Dokulu Buket",
-    "lavanta-dokulu-buket",
-    "cat-3",
-    940,
+    "Menekşe Buketi",
+    "menekse-buketi",
+    "cat-2",
+    360,
     undefined,
-    "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=900&q=80",
-    "Dogal tonlari sevenler icin lavanta esintili rahat buket.",
-    ["Ayni Gun"],
-  ),
-  product(
-    "p10",
-    "Orkide Duo",
-    "orkide-duo",
-    "cat-5",
-    1260,
-    1390,
-    "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=900&q=80",
-    "Minimal ic mekanlar icin ikili orkide sunumu.",
-    ["Ofis"],
-  ),
-  product(
-    "p11",
-    "Yedi Gul Romantik Paket",
-    "yedi-gul-romantik-paket",
-    "cat-1",
-    860,
-    940,
-    "https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=900&q=80",
-    "Daha etkili ama hala ulasilabilir bir gul gonderimi.",
-    ["Kampanyali"],
-  ),
-  product(
-    "p12",
-    "Nisan Tagi Baslangic Paketi",
-    "nisan-tagi-baslangic-paketi",
-    "cat-6",
-    3200,
-    undefined,
-    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=900&q=80",
-    "Kucuk olcekli organizasyonlar icin ekonomik paketleme.",
-    ["Etkinlik"],
+    "/products/violet-cluster.jpg",
+    "Tatlı ve narin menekşelerden hazırlanmış nostaljik buket.",
+    ["Klasik"],
   ),
 ];
 
@@ -457,6 +602,41 @@ export const coupons: Coupon[] = [
 ];
 
 export const seedOrders: Order[] = [
+  {
+    id: "order-cleimp-test-1",
+    orderNumber: "CK-26042101",
+    status: "PREPARING",
+    paymentStatus: "PAID",
+    paymentMethod: "CARD",
+    subtotal: 480,
+    discountTotal: 0,
+    deliveryFee: 90,
+    grandTotal: 570,
+    customerName: "Cleimp Test",
+    customerPhone: "05550000000",
+    customerEmail: "cleimp.twich@gmail.com",
+    recipientName: "Cleimp Test",
+    recipientPhone: "05550000000",
+    deliveryDate: "2026-04-22",
+    deliverySlot: "12:00 - 15:00",
+    cardMessage: "Test siparişidir.",
+    note: "Admin ve hesap ekranı testi için eklendi.",
+    addressSnapshotJson:
+      '{"city":"İstanbul","district":"Kadıköy","neighborhood":"Merkez","addressLine":"Test Mah. Deneme Sok. No:1"}',
+    items: [
+      {
+        id: "order-cleimp-test-1-item-1",
+        productId: "p10",
+        productName: "Pembe Gül Buketi",
+        variantName: "Standart",
+        quantity: 1,
+        unitPrice: 480,
+        totalPrice: 480,
+      },
+    ],
+    createdAt: "2026-04-21T10:00:00.000Z",
+    updatedAt: "2026-04-21T10:00:00.000Z",
+  },
   {
     id: "order-1",
     orderNumber: "CK-24041101",
@@ -572,17 +752,17 @@ export const contentPages: ContentPage[] = [
     id: "content-1",
     title: "Gizlilik Politikasi",
     slug: "gizlilik-politikasi",
-    seoTitle: "Gizlilik Politikasi | Luna Cicek",
+    seoTitle: "Gizlilik Politikasi | Iris Atalier",
     seoDescription: "Kisisel verilerin islenmesi ve korunmasina dair bilgilendirme.",
     isPublished: true,
     content:
-      "Luna Cicek, siparis ve iletisim sureclerinde paylasilan bilgileri sadece hizmetin sunulmasi, siparis takibi ve yasal zorunluluklar kapsaminda kullanir. Veriler izinsiz ucuncu taraflarla pazarlama amacli paylasilmaz.",
+      "Iris Atalier, siparis ve iletisim sureclerinde paylasilan bilgileri sadece hizmetin sunulmasi, siparis takibi ve yasal zorunluluklar kapsaminda kullanir. Veriler izinsiz ucuncu taraflarla pazarlama amacli paylasilmaz.",
   },
   {
     id: "content-2",
     title: "Mesafeli Satis Sozlesmesi",
     slug: "mesafeli-satis-sozlesmesi",
-    seoTitle: "Mesafeli Satis Sozlesmesi | Luna Cicek",
+    seoTitle: "Mesafeli Satis Sozlesmesi | Iris Atalier",
     seoDescription: "Siparis, teslimat ve cayma sartlarini aciklayan sozlesme.",
     isPublished: true,
     content:
@@ -592,7 +772,7 @@ export const contentPages: ContentPage[] = [
     id: "content-3",
     title: "On Bilgilendirme Formu",
     slug: "on-bilgilendirme-formu",
-    seoTitle: "On Bilgilendirme Formu | Luna Cicek",
+    seoTitle: "On Bilgilendirme Formu | Iris Atalier",
     seoDescription: "Siparis oncesi temel bilgilendirme ozeti.",
     isPublished: true,
     content:
@@ -602,7 +782,7 @@ export const contentPages: ContentPage[] = [
     id: "content-4",
     title: "Teslimat ve Iade",
     slug: "teslimat-ve-iade",
-    seoTitle: "Teslimat ve Iade | Luna Cicek",
+    seoTitle: "Teslimat ve Iade | Iris Atalier",
     seoDescription: "Teslimat saatleri, iade ve iptal kosullari.",
     isPublished: true,
     content:
@@ -642,6 +822,7 @@ export const trustHighlights = [
 
 export const routeMap = [
   "/",
+  "/arama",
   "/kategori/[slug]",
   "/urun/[slug]",
   "/sepet",

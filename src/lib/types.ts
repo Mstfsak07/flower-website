@@ -1,7 +1,10 @@
 export type UserRole = "CUSTOMER" | "ADMIN";
 export type AuthUser = {
+  id?: string;
+  birthDate?: string;
   name: string;
   email: string;
+  emailVerified?: boolean;
   phone?: string;
   role: UserRole;
 };
@@ -9,6 +12,17 @@ export type AuthUser = {
 export type AuthSession = {
   user: AuthUser;
   issuedAt: string;
+};
+export type AdminUserSummary = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: boolean;
+  phone?: string;
+  role: UserRole;
+  orderCount: number;
+  addressCount: number;
+  createdAt?: string;
 };
 export type PaymentMethod = "CARD" | "BANK_TRANSFER" | "CASH_ON_DELIVERY";
 export type PaymentStatus = "UNPAID" | "PAID" | "FAILED" | "REFUNDED";
@@ -96,6 +110,14 @@ export type CartItem = {
   selectedOptions?: Record<string, string | boolean>;
 };
 
+export type OrderCartInputItem = {
+  productId: string;
+  quantity: number;
+  variantId?: string;
+  note?: string;
+  selectedOptions?: Record<string, string | boolean>;
+};
+
 export type DeliveryZone = {
   id: string;
   name: string;
@@ -142,6 +164,35 @@ export type Order = {
   addressSnapshotJson: string;
   couponCode?: string;
   items: OrderItem[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ReturnRequestType = "CANCEL" | "REFUND";
+export type ReturnRequestStatus = "NEW" | "REVIEWING" | "APPROVED" | "REJECTED" | "COMPLETED";
+
+export type ReturnRequestItem = {
+  id: string;
+  orderItemId: string;
+  productName: string;
+  variantName?: string;
+  quantity: number;
+  totalPrice: number;
+};
+
+export type ReturnRequest = {
+  id: string;
+  requestNumber: string;
+  type: ReturnRequestType;
+  status: ReturnRequestStatus;
+  orderId: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  reason: string;
+  note?: string;
+  items: ReturnRequestItem[];
   createdAt: string;
   updatedAt: string;
 };
@@ -235,4 +286,8 @@ export type CheckoutPayload = {
   cardMessage?: string;
   note?: string;
   couponCode?: string;
+};
+
+export type CreateOrderPayload = CheckoutPayload & {
+  items: OrderCartInputItem[];
 };

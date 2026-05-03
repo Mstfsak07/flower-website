@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { createWholesaleInquiryRepo } from "@/lib/repositories/admin-repository";
 import { wholesaleInquirySchema } from "@/lib/schemas";
-import { sendMail } from "@/lib/services/mail-service";
-import { renderWholesaleInquiryEmail } from "@/emails/wholesale-inquiry";
-import type { WholesaleInquiry } from "@/lib/types";
+import { notifyWholesaleInquiryCreated } from "@/lib/services/notification-service";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -12,21 +11,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
 
-  const now = new Date().toISOString();
-  const inquiry: WholesaleInquiry = {
-    id: `inq-${Date.now()}`,
-    status: "NEW",
-    createdAt: now,
-    updatedAt: now,
-    ...parsed.data,
-  };
+  const inquiry = await createWholesaleInquiryRepo(parsed.data);
 
   // Notify admin (best-effort)
-  sendMail({
-    to: process.env.ADMIN_EMAIL ?? "admin@lunacicek.test",
-    subject: `Yeni toptan talep — ${inquiry.fullName}`,
-    html: renderWholesaleInquiryEmail(inquiry),
-  }).catch(() => {});
+  notifyWholesaleInquiryCreated(inquiry).catch(() => undefined);
 
   return NextResponse.json({ ok: true, inquiry }, { status: 201 });
 }

@@ -54,15 +54,16 @@ export function ProductGallery({
 
   return (
     <div className="space-y-6">
-      <div className="glass-panel overflow-hidden rounded-[2.5rem] border border-white/80 shadow-xl shadow-[var(--color-ink)]/5">
-        <div className="relative h-[28rem] bg-[rgba(255,255,255,0.48)] sm:h-[34rem] lg:h-[40rem]">
+      <div className="floating-surface overflow-hidden rounded-[2.4rem]">
+        <div className="relative h-[22rem] bg-[rgba(255,255,255,0.48)] sm:h-[26rem] lg:h-[32rem]">
           <div
             className="absolute inset-0 bg-cover bg-center transition-all duration-500"
             style={{ backgroundImage: `url(${activeImage.imageUrl})` }}
             aria-label={activeImage.altText ?? name}
           />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,.16),transparent_34%),linear-gradient(180deg,rgba(20,12,16,.02),rgba(20,12,16,.2))]" />
           <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[rgba(255,255,255,0.72)] via-transparent to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(18,20,28,0.5)] via-[rgba(18,20,28,0.12)] to-transparent p-6 sm:p-8">
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[rgba(18,20,28,0.5)] via-[rgba(18,20,28,0.12)] to-transparent p-5 sm:p-6">
             <div className="flex flex-wrap gap-2">
               {(badges ?? []).slice(0, 3).map((badge) => (
                 <span
@@ -78,10 +79,10 @@ export function ProductGallery({
                 </span>
               ) : null}
             </div>
-            <div className="mt-4 max-w-xl">
+            <div className="mt-3 max-w-xl">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/70">Floral atelier secimi</p>
-              <h2 className="mt-2 font-serif text-3xl tracking-tight text-white sm:text-[2.2rem]">{name}</h2>
-              <p className="mt-3 max-w-lg text-sm leading-7 text-white/80 sm:text-[15px]">
+              <h2 className="mt-2 font-serif text-2xl tracking-tight text-white sm:text-[2rem]">{name}</h2>
+              <p className="mt-2 max-w-lg text-sm leading-6 text-white/80 sm:text-[14px]">
                 {description}
               </p>
             </div>
@@ -89,7 +90,7 @@ export function ProductGallery({
         </div>
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_18rem]">
         <div className="grid gap-3 sm:grid-cols-4">
           {images.map((image, index) => {
             const isActive = image.id === activeImage.id;
@@ -101,10 +102,10 @@ export function ProductGallery({
                 onClick={() => setActiveImageId(image.id)}
                 className={[
                   "relative overflow-hidden rounded-[1.6rem] border text-left transition duration-300",
-                  "h-24 sm:h-28",
+                  "h-20 sm:h-24",
                   isActive
                     ? "border-[var(--color-accent)] shadow-lg shadow-[var(--color-accent)]/15"
-                    : "border-white/70 hover:border-[var(--color-accent)]/50",
+                    : "border-white/70 hover:-translate-y-1 hover:border-[var(--color-accent)]/50",
                 ].join(" ")}
                 aria-pressed={isActive}
                 aria-label={`${name} gorsel ${index + 1}`}
@@ -127,12 +128,12 @@ export function ProductGallery({
           })}
         </div>
 
-        <div className="glass-panel rounded-[2rem] p-6">
+        <div className="floating-surface rounded-[2rem] p-5">
           <p className="text-xs font-semibold uppercase tracking-[0.26em] text-[var(--color-accent)]">Guvenli secim</p>
           <div className="mt-4 grid gap-3">
             {galleryStats.map((item) => (
               <div key={item.label} className="rounded-[1.5rem] bg-white/75 p-4">
-                <div className="text-2xl font-semibold text-[var(--color-ink)]">{item.value}</div>
+                <div className="text-xl font-semibold text-[var(--color-ink)]">{item.value}</div>
                 <div className="mt-1 text-sm leading-6 text-[var(--color-muted)]">{item.label}</div>
               </div>
             ))}

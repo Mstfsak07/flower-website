@@ -31,6 +31,54 @@ export const authRegisterSchema = z
     path: ["confirmPassword"],
   });
 
+// ── Account schemas ───────────────────────────────────────────────────────────
+
+export const profileUpdateSchema = z.object({
+  birthDate: z.string().max(32).trim().optional().or(z.literal("")),
+  name: z.string().min(2).max(120).trim(),
+  email: z.string().email().max(254).trim().toLowerCase(),
+  phone: z.string().min(10).max(20).trim().optional().or(z.literal("")),
+  currentPassword: z.string().min(6).max(128).optional().or(z.literal("")),
+});
+
+export const passwordUpdateSchema = z
+  .object({
+    currentPassword: z.string().min(6).max(128),
+    nextPassword: z
+      .string()
+      .min(8)
+      .max(128)
+      .regex(/[A-Za-z]/, "Sifre en az bir harf icermeli.")
+      .regex(/[0-9]/, "Sifre en az bir rakam icermeli."),
+    confirmPassword: z.string().min(8).max(128),
+  })
+  .refine((input) => input.nextPassword === input.confirmPassword, {
+    message: "Sifreler eslesmiyor.",
+    path: ["confirmPassword"],
+  });
+
+export const addressCreateSchema = z.object({
+  title: z.string().min(1).max(64).trim(),
+  fullName: z.string().min(2).max(128).trim(),
+  phone: z.string().min(10).max(20).trim(),
+  city: z.string().min(2).max(64).trim(),
+  district: z.string().min(2).max(64).trim(),
+  neighborhood: z.string().min(2).max(128).trim(),
+  addressLine: z.string().min(5).max(512).trim(),
+  postalCode: z.string().max(10).trim().optional(),
+  isDefault: z.boolean().optional(),
+});
+
+export const addressUpdateSchema = addressCreateSchema.partial();
+
+export const returnRequestCreateSchema = z.object({
+  orderId: z.string().min(1),
+  requestType: z.enum(["CANCEL", "REFUND"]),
+  itemIds: z.array(z.string().min(1)).min(1),
+  reason: z.string().min(3).max(160).trim(),
+  note: z.string().max(1000).trim().optional().or(z.literal("")),
+});
+
 // ── Admin schemas ─────────────────────────────────────────────────────────────
 
 export const adminProductSchema = z.object({
@@ -38,6 +86,7 @@ export const adminProductSchema = z.object({
   slug: z.string().min(2).optional(),
   shortDescription: z.string().min(2),
   description: z.string().min(2),
+  imageUrl: z.string().min(1).optional(),
   sku: z.string().min(1),
   basePrice: z.number().positive(),
   compareAtPrice: z.number().positive().optional(),
@@ -139,7 +188,15 @@ export const cartItemSchema = z.object({
   productId: z.string().min(1),
   variantId: z.string().optional(),
   quantity: z.number().int().positive(),
-  unitPrice: z.number().nonnegative(),
   note: z.string().optional(),
   selectedOptions: z.record(z.string(), z.union([z.string(), z.boolean()])).optional(),
+});
+
+export const createOrderSchema = checkoutValidationSchema.extend({
+  items: z.array(cartItemSchema).min(1).max(100),
+});
+
+export const orderTrackingLookupSchema = z.object({
+  orderNumber: z.string().min(3).max(64).trim(),
+  contact: z.string().min(5).max(254).trim(),
 });

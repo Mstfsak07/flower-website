@@ -13,8 +13,8 @@ export default function AdminProductsPage() {
   return (
     <AdminShell
       currentPath="/admin/urunler"
-      description="Urun, stok, kategori ve one cikarma durumlarini hizli yonet."
-      title="Urun Yonetimi"
+      description="Ürünleri görüntüleyin, stok durumunu takip edin ve yeni ürün ekleyin."
+      title="Ürün Yönetimi"
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
@@ -43,7 +43,7 @@ export default function AdminProductsPage() {
               className="rounded-full bg-[var(--color-ink)] px-4 py-2 text-sm font-semibold text-white"
               href="/admin/urunler/yeni"
             >
-              Yeni Urun
+              Yeni Ürün Ekle
             </Link>
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
@@ -72,9 +72,9 @@ export default function AdminProductsPage() {
                 href: "/admin/urunler",
               },
               {
-                title: "Kategori dagilimini kontrol et",
-                description: "Yuksek stoklu ama gorunurlugu dusuk kategorileri kampanya ile destekle.",
-                href: "/admin/kategoriler",
+                title: "Yeni ürün ekle",
+                description: "Kategori, fiyat, stok ve görsel bilgisiyle yeni ürün kaydı oluştur.",
+                href: "/admin/urunler/yeni",
               },
             ].map((item) => (
               <Link

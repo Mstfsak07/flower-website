@@ -11,7 +11,7 @@
  *   ADMIN_EMAIL                        (recipient for admin notifications)
  *   SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS
  *   RESEND_API_KEY
- *   MAIL_FROM                          (sender address, e.g. "Luna Cicek <no-reply@lunacicek.com>")
+ *   MAIL_FROM                          (sender address, e.g. "Iris Atalier <no-reply@irisatalier.com>")
  */
 
 export type MailPayload = {
@@ -36,6 +36,7 @@ export function resolveMailProvider(): string {
  */
 export async function sendMail(payload: MailPayload): Promise<MailResult> {
   const provider = resolveMailProvider();
+  const from = process.env.MAIL_FROM ?? "Cicekci <no-reply@example.com>";
 
   if (provider === "mock") {
     // In demo/test mode just log — no external call.
@@ -56,14 +57,45 @@ export async function sendMail(payload: MailPayload): Promise<MailResult> {
   }
 
   if (provider === "resend") {
-    // Wire Resend SDK once RESEND_API_KEY is present.
-    // Example (install resend first):
-    //   const resend = new Resend(process.env.RESEND_API_KEY);
-    //   const { data, error } = await resend.emails.send({ from, to, subject, html });
-    //   if (error) throw error;
-    //   return { ok: true, transport: "resend", messageId: data.id };
-    console.warn("[mail:resend] Resend transport not yet wired — dropping email to", payload.to);
-    return { ok: true, transport: "resend" };
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn("[mail:resend] RESEND_API_KEY missing — dropping email to", payload.to);
+      return { ok: false, transport: "resend" };
+    }
+
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from,
+          html: payload.html,
+          subject: payload.subject,
+          to: [payload.to],
+        }),
+      });
+
+      const body = (await response.json()) as {
+        error?: { message?: string };
+        id?: string;
+      };
+
+      if (!response.ok || !body.id) {
+        console.warn("[mail:resend] send failed:", body.error?.message ?? response.statusText);
+        return { ok: false, transport: "resend" };
+      }
+
+      return { ok: true, transport: "resend", messageId: body.id };
+    } catch (error) {
+      console.warn(
+        "[mail:resend] request failed:",
+        error instanceof Error ? error.message : "unknown error",
+      );
+      return { ok: false, transport: "resend" };
+    }
   }
 
   // Unknown provider — log and continue.

@@ -1,222 +1,236 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { Gift, MapPin, ShieldCheck, Sparkles, TicketPercent, Truck } from "lucide-react";
+import { Minus, Plus, Sparkles, Trash2 } from "lucide-react";
 
 import { useStore } from "@/components/providers/store-provider";
-import { coupons, getCategoryById, getProductById } from "@/lib/data";
+import { getLocalizedProduct, getProductById } from "@/lib/data";
+import type { Locale } from "@/lib/locale";
 import { formatPrice } from "@/lib/utils";
 
-export function CartPageView() {
+type CartPageViewProps = {
+  locale: Locale;
+};
+
+const copy = {
+  tr: {
+    loadingLabel: "Sepet Yukleniyor",
+    loadingTitle: "Sepet bilgileri hazirlaniyor.",
+    emptyLabel: "Sepet Bos",
+    emptyTitle: "Sepetinde henuz urun yok.",
+    emptyDescription: "Urun ekledikten sonra odeme adimina gecebilirsin.",
+    backToCatalog: "Magazaya Don",
+    pageTitle: "Alisveris Sepeti",
+    pageSubtitle: "Luks secimlerin burada seni bekliyor",
+    quantity: "Adet",
+    remove: "Kaldir",
+    price: "Fiyat",
+    subtotal: "Ara Toplam",
+    cartTotal: "Sepet Toplami",
+    summaryTitle: "Sepet Ozeti",
+    estimatedTax: "Tahmini Vergi",
+    shipping: "Kargo",
+    complimentary: "Ucretsiz",
+    checkout: "Odeme Adimina Gec",
+    securePayment: "Guvenli odeme",
+    continueShopping: "Alisverise Devam Et",
+    footerCopy: "© 2024 Iris Atalier. Tum haklari saklidir.",
+  },
+  en: {
+    loadingLabel: "Loading Cart",
+    loadingTitle: "Preparing your cart details.",
+    emptyLabel: "Cart Empty",
+    emptyTitle: "There are no items in your cart yet.",
+    emptyDescription: "Add products before moving to checkout.",
+    backToCatalog: "Return to Shop",
+    pageTitle: "Shopping Cart",
+    pageSubtitle: "Your luxurious selections",
+    quantity: "Quantity",
+    remove: "Remove",
+    price: "Price",
+    subtotal: "Subtotal",
+    cartTotal: "Cart Total",
+    summaryTitle: "Cart Summary",
+    estimatedTax: "Estimated Tax",
+    shipping: "Shipping",
+    complimentary: "Complimentary",
+    checkout: "Proceed to Checkout",
+    securePayment: "Secure payment",
+    continueShopping: "Continue Shopping",
+    footerCopy: "© 2024 Iris Atalier. All rights reserved.",
+  },
+} as const;
+
+export function CartPageView({ locale }: CartPageViewProps) {
+  const t = copy[locale];
   const { cart, hydrated, removeFromCart, updateQuantity } = useStore();
-  const items = cart.map((item) => ({ item, product: getProductById(item.productId) })).filter(Boolean);
+  const items = cart
+    .map((item) => ({ item, product: getProductById(item.productId) }))
+    .filter((entry): entry is { item: (typeof cart)[number]; product: NonNullable<ReturnType<typeof getProductById>> } => Boolean(entry.product));
+  const localizedItems = items.map(({ item, product }) => ({ item, product: getLocalizedProduct(product, locale) }));
+
   const subtotal = cart.reduce((total, item) => total + item.unitPrice * item.quantity, 0);
-  const deliveryFee = subtotal >= 1750 ? 0 : 90;
-  const complimentaryNote = cart.some((item) => item.note?.trim());
-  const suggestedCoupon = coupons.find((coupon) => subtotal >= coupon.minOrderAmount) ?? coupons[0];
-  const totalQuantity = cart.reduce((total, item) => total + item.quantity, 0);
+  const estimatedTax = subtotal * 0.07;
+  const total = subtotal + estimatedTax;
 
   if (!hydrated) {
     return (
-      <section className="mx-auto w-full max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="panel p-10 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            Sepet yukleniyor
-          </p>
-          <h1 className="mt-4 font-serif text-5xl text-[var(--color-ink)]">Sepet durumu hazirlaniyor.</h1>
-        </div>
+      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
+        <p className="text-xs uppercase tracking-[0.3em] text-[#6b5ca5]">{t.loadingLabel}</p>
+        <h1 className="mt-4 font-serif text-5xl text-[#aa2e28]">{t.loadingTitle}</h1>
       </section>
     );
   }
 
-  if (cart.length === 0) {
+  if (localizedItems.length === 0) {
     return (
-      <section className="mx-auto w-full max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="panel p-10 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            Sepet Bos
-          </p>
-          <h1 className="mt-4 font-serif text-5xl text-[var(--color-ink)]">Henuz urun eklenmedi.</h1>
-          <p className="mt-4 text-base leading-7 text-[var(--color-muted)]">
-            Katalogdan urun secip sepete ekledikten sonra checkout ekranina gecebilirsin.
-          </p>
-          <Link
-            className="mt-6 inline-flex rounded-full bg-[var(--color-ink)] px-5 py-3 text-sm font-semibold text-white"
-            href="/kategori/mini-buketler"
-          >
-            Kataloga Don
-          </Link>
-        </div>
+      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
+        <p className="text-xs uppercase tracking-[0.3em] text-[#6b5ca5]">{t.emptyLabel}</p>
+        <h1 className="mt-4 font-serif text-5xl text-[#aa2e28]">{t.emptyTitle}</h1>
+        <p className="mx-auto mt-4 max-w-xl text-[#6d5b57]">{t.emptyDescription}</p>
+        <Link
+          className="mt-8 inline-flex rounded-full bg-[linear-gradient(135deg,#aa2e28_0%,#cc473e_100%)] px-10 py-4 text-sm font-bold uppercase tracking-[0.2em] text-white shadow-lg shadow-[#aa2e2833] transition hover:opacity-95"
+          href="/magaza"
+        >
+          {t.backToCatalog}
+        </Link>
       </section>
     );
   }
 
   return (
-    <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_24rem] lg:px-8">
-      <div className="space-y-4">
-        <div className="panel flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">Sepet</p>
-            <h1 className="mt-3 font-serif text-4xl text-[var(--color-ink)]">Secimini son kez gozden gecir.</h1>
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--color-muted)]">
-              Buket detaylari, kart notu ve teslimat planin bu adimda netlesir. Ortalama hazirlama suremiz ayni gun
-              siparislerde 2 saattir.
-            </p>
-          </div>
-          <div className="rounded-[1.5rem] border border-white/70 bg-white/70 px-5 py-4 text-sm text-[var(--color-muted)] shadow-sm">
-            <div className="font-semibold text-[var(--color-ink)]">{totalQuantity} urun sepetinde hazir</div>
-            <div className="mt-1">Teslimat uygunlugu checkout adiminda teyit edilir.</div>
-          </div>
-        </div>
-        {items.map(({ item, product }) =>
-          product ? (
-            <div key={item.id} className="panel flex flex-col gap-5 p-5 sm:flex-row">
-              <div
-                className="h-44 rounded-[1.5rem] bg-cover bg-center sm:w-52"
-                style={{ backgroundImage: `url(${product.images[0]?.imageUrl})` }}
-              />
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h2 className="font-serif text-3xl text-[var(--color-ink)]">{product.name}</h2>
-                  <p className="mt-2 text-sm text-[var(--color-muted)]">{product.shortDescription}</p>
-                </div>
-                <div className="flex flex-wrap gap-2 text-xs font-medium text-[var(--color-muted)]">
-                  <span className="rounded-full bg-[var(--color-card)] px-3 py-1.5">
-                    Kategori: {getCategoryById(product.categoryId)?.name ?? "Koleksiyon"}
-                  </span>
-                  <span className="rounded-full bg-[var(--color-card)] px-3 py-1.5">
-                    Hazirlama: {product.minPreparationHours} saat
-                  </span>
-                  {item.note?.trim() ? (
-                    <span className="rounded-full bg-[var(--color-card)] px-3 py-1.5">Kart notu eklendi</span>
-                  ) : (
-                    <span className="rounded-full bg-[var(--color-card)] px-3 py-1.5">Kart notu eklenebilir</span>
-                  )}
-                </div>
-                {item.note?.trim() ? (
-                  <div className="rounded-[1.25rem] bg-[var(--color-card)]/80 px-4 py-3 text-sm text-[var(--color-muted)]">
-                    <span className="font-semibold text-[var(--color-ink)]">Kart notu:</span> {item.note}
-                  </div>
-                ) : null}
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center rounded-full border border-[var(--color-line)] bg-white">
-                    <button
-                      className="px-4 py-2 text-lg"
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      type="button"
-                    >
-                      -
-                    </button>
-                    <span className="min-w-12 text-center text-sm font-semibold">{item.quantity}</span>
-                    <button
-                      className="px-4 py-2 text-lg"
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      type="button"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <button
-                    className="rounded-full border border-[var(--color-line)] px-4 py-2 text-sm font-medium text-[var(--color-ink)]"
-                    onClick={() => removeFromCart(item.id)}
-                    type="button"
-                  >
-                    Kaldir
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2 text-right">
-                <div className="text-xs uppercase tracking-[0.18em] text-[var(--color-muted)]">Ara toplam</div>
-                <div className="text-xl font-semibold text-[var(--color-ink)]">
-                  {formatPrice(item.unitPrice * item.quantity)}
-                </div>
-                <div className="text-sm text-[var(--color-muted)]">{formatPrice(item.unitPrice)} / adet</div>
-              </div>
-            </div>
-          ) : null,
-        )}
+    <>
+      <div className="mb-14 text-center">
+        <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#6b5ca5]">
+          {locale === "tr" ? "Sepet" : "Cart"}
+        </p>
+        <h1 className="font-serif text-5xl font-medium tracking-tight text-[#aa2e28]">{t.pageTitle}</h1>
+        <p className="mt-3 font-sans text-lg text-[#6d5b57]">{t.pageSubtitle}</p>
       </div>
-      <aside className="panel h-fit space-y-5 p-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-            Siparis Ozeti
-          </p>
-          <h2 className="mt-3 font-serif text-3xl text-[var(--color-ink)]">Sepetin Hazir</h2>
-        </div>
-        <div className="space-y-3 rounded-[1.5rem] bg-[var(--color-card)] p-5 text-sm">
-          <div className="flex justify-between">
-            <span>Ara Toplam</span>
-            <span>{formatPrice(subtotal)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Teslimat</span>
-            <span>{deliveryFee === 0 ? "Ucretsiz" : formatPrice(deliveryFee)}</span>
-          </div>
-          <div className="flex justify-between font-semibold text-[var(--color-ink)]">
-            <span>Toplam</span>
-            <span>{formatPrice(subtotal + deliveryFee)}</span>
-          </div>
-        </div>
-        <div className="rounded-[1.5rem] border border-dashed border-[var(--color-line)] bg-white/70 p-5 text-sm text-[var(--color-muted)]">
-          <div className="flex items-center gap-2 font-semibold text-[var(--color-ink)]">
-            <TicketPercent className="size-4 text-[var(--color-accent)]" />
-            Kupon onerisi
-          </div>
-          <p className="mt-2 leading-6">
-            Uygun siparislerde <span className="font-semibold text-[var(--color-ink)]">{suggestedCoupon.code}</span>{" "}
-            kodu aktif. Kupon checkout ekraninda uygulanir.
-          </p>
-        </div>
-        <div className="grid gap-3 text-sm">
-          <div className="flex gap-3 rounded-[1.35rem] bg-white/70 p-4 text-[var(--color-muted)]">
-            <Truck className="mt-0.5 size-4 text-[var(--color-accent)]" />
-            <div>
-              <div className="font-semibold text-[var(--color-ink)]">Ayni gun dagitim</div>
-              <div className="mt-1 leading-6">16:00 oncesi siparislerde uygun bolgelere hizli teslimat sunulur.</div>
-            </div>
-          </div>
-          <div className="flex gap-3 rounded-[1.35rem] bg-white/70 p-4 text-[var(--color-muted)]">
-            <Gift className="mt-0.5 size-4 text-[var(--color-accent)]" />
-            <div>
-              <div className="font-semibold text-[var(--color-ink)]">Kart ve sunum kontrolu</div>
-              <div className="mt-1 leading-6">
-                {complimentaryNote
-                  ? "Ekledigin kart notu baski oncesi kontrol edilecek."
-                  : "Tum siparislerde zarif paketleme ve kart alani hazirdir."}
+
+      <div className="flex flex-col gap-12 lg:flex-row">
+        <div className="flex-grow space-y-8">
+          {localizedItems.map(({ item, product }) => (
+            <div className="rounded-[1.8rem] border border-[#e3c5bf] bg-white/82 p-6 shadow-[0_22px_52px_-38px_rgba(170,46,40,0.22)]" key={item.id}>
+              <div className="flex flex-col items-center gap-6 md:flex-row">
+                <Image
+                  alt={product.name}
+                  className="h-40 w-40 rounded-[1.25rem] border border-[#ead8d2] object-cover"
+                  height={160}
+                  src={product.images[0]?.imageUrl}
+                  unoptimized
+                  width={160}
+                />
+                <div className="flex w-full flex-grow flex-col justify-between md:flex-row">
+                  <div className="space-y-4 text-center md:text-left">
+                    <h3 className="font-serif text-2xl text-[#2f2623]">{product.name}</h3>
+                    <div className="flex items-center justify-center gap-4 md:justify-start">
+                      <span className="text-sm uppercase tracking-widest text-[#8c716d]">{t.quantity}:</span>
+                      <div className="inline-flex items-center rounded-full border border-[#ead8d2] bg-[#fff8f3]">
+                        <button
+                          className="inline-flex h-9 w-9 items-center justify-center text-[#7f231e]"
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          type="button"
+                        >
+                          <Minus className="size-4" />
+                        </button>
+                        <input
+                          className="w-12 bg-transparent text-center text-sm font-semibold text-[#2f2623] outline-none"
+                          min={1}
+                          onChange={(event) => updateQuantity(item.id, Number(event.target.value) || 1)}
+                          type="number"
+                          value={item.quantity}
+                        />
+                        <button
+                          className="inline-flex h-9 w-9 items-center justify-center text-[#7f231e]"
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          type="button"
+                        >
+                          <Plus className="size-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <button
+                      className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-[#aa2e28] underline underline-offset-4 transition hover:text-[#7f231e]"
+                      onClick={() => removeFromCart(item.id)}
+                      type="button"
+                    >
+                      <Trash2 className="size-4" />
+                      {t.remove}
+                    </button>
+                  </div>
+                  <div className="mt-4 space-y-1 text-right md:mt-0">
+                    <p className="text-sm text-[#8c716d]">
+                      {t.quantity}: {item.quantity}
+                    </p>
+                    {item.quantity > 1 ? (
+                      <>
+                        <p className="text-sm text-[#8c716d]">
+                          {t.price}: {formatPrice(item.unitPrice)} / adet
+                        </p>
+                        <p className="text-xl font-medium text-[#aa2e28]">
+                          {t.subtotal}: {formatPrice(item.unitPrice * item.quantity)}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-xl font-medium text-[#aa2e28]">
+                        {t.price}: {formatPrice(item.unitPrice)}
+                      </p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
+          ))}
+
+          <div className="pt-6 text-right">
+            <span className="font-serif text-2xl font-medium tracking-wider text-[#aa2e28]">
+              {t.cartTotal}: {formatPrice(total)}
+            </span>
           </div>
-          <div className="flex gap-3 rounded-[1.35rem] bg-white/70 p-4 text-[var(--color-muted)]">
-            <MapPin className="mt-0.5 size-4 text-[var(--color-accent)]" />
-            <div>
-              <div className="font-semibold text-[var(--color-ink)]">Bolge teyidi</div>
-              <div className="mt-1 leading-6">Caddebostan merkezli cicek gonderimleri checkout adiminda netlesir.</div>
+        </div>
+
+        <aside className="w-full lg:w-96">
+          <div className="sticky top-36 rounded-[1.8rem] border border-[#e3c5bf] bg-white/84 p-8 shadow-[0_22px_52px_-38px_rgba(170,46,40,0.22)] backdrop-blur-md">
+            <h2 className="mb-10 text-center font-serif text-2xl font-medium uppercase tracking-widest text-[#aa2e28]">
+              {t.summaryTitle}
+            </h2>
+            <div className="mb-10 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="font-light text-[#6d5b57]">{t.subtotal}:</span>
+                <span className="font-medium text-[#2f2623]">{formatPrice(subtotal)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-light text-[#6d5b57]">{t.estimatedTax}:</span>
+                <span className="font-medium text-[#2f2623]">{formatPrice(estimatedTax)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-light text-[#6d5b57]">{t.shipping} ({t.complimentary}):</span>
+                <span className="font-medium text-[#2f2623]">{formatPrice(0)}</span>
+              </div>
+            </div>
+            <div className="space-y-6 text-center">
+              <Link
+                className="block w-full rounded-full bg-[linear-gradient(135deg,#aa2e28_0%,#cc473e_100%)] py-4 text-center text-sm font-bold uppercase tracking-[0.2em] text-white shadow-lg shadow-[#aa2e2833] transition hover:opacity-95"
+                href="/odeme"
+              >
+                {t.checkout}
+              </Link>
+              <div className="flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-[#8c716d]">
+                <Sparkles className="size-4" />
+                {t.securePayment}
+              </div>
+              <Link
+                className="block text-sm font-light uppercase tracking-widest text-[#aa2e28] underline underline-offset-8 transition hover:text-[#7f231e]"
+                href="/magaza"
+              >
+                {t.continueShopping}
+              </Link>
             </div>
           </div>
-        </div>
-        <Link
-          className="block rounded-full bg-[var(--color-ink)] px-5 py-3 text-center text-sm font-semibold text-white"
-          href="/odeme"
-        >
-          Odeme Adimina Gec
-        </Link>
-        <div className="rounded-[1.5rem] bg-[var(--color-ink)] px-5 py-4 text-sm text-white">
-          <div className="flex items-center gap-2 font-semibold">
-            <ShieldCheck className="size-4" />
-            Guvenli siparis akisi
-          </div>
-          <p className="mt-2 leading-6 text-white/75">
-            Teslimat notlari, alici bilgileri ve odeme tercihi bir sonraki adimda birlikte tamamlanir.
-          </p>
-        </div>
-        <Link
-          className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-muted)] transition-colors hover:text-[var(--color-ink)]"
-          href="/kategori/mini-buketler"
-        >
-          <Sparkles className="size-4" />
-          Alisverise devam et
-        </Link>
-      </aside>
-    </section>
+        </aside>
+      </div>
+    </>
   );
 }

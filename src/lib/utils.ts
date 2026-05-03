@@ -1,7 +1,10 @@
 import { clsx, type ClassValue } from "clsx";
 import { format } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
 import { tr } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
+
+import type { Locale } from "@/lib/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,6 +20,10 @@ export function formatPrice(value: number) {
 
 export function formatDate(value: string) {
   return format(new Date(value), "d MMMM yyyy", { locale: tr });
+}
+
+export function formatLocalizedDate(value: string, locale: Locale) {
+  return format(new Date(value), "d MMMM yyyy", { locale: locale === "en" ? enUS : tr });
 }
 
 export function slugify(value: string) {

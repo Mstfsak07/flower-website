@@ -5,16 +5,16 @@ import { categories, contentPages, coupons, deliveryZones, heroSlides, products,
 const prisma = new PrismaClient();
 
 async function main() {
-  // Admin user — passwordHash is intentionally empty until a real auth layer is added.
-  // Set ADMIN_SEED_PASSWORD env var to populate a bcrypt hash during seeding.
-  // For demo/local mode this account is accessible via ADMIN_SECRET header guard only.
+  // Admin user for DB-backed authentication.
+  // Set ADMIN_SEED_PASSWORD_HASH to a precomputed hash generated with the app's auth helper.
+  // When DATABASE_URL is configured, login prefers this persisted admin over demo credentials.
   const adminPasswordHash = process.env.ADMIN_SEED_PASSWORD_HASH ?? null;
   await prisma.user.upsert({
-    where: { email: "admin@lunacicek.test" },
+    where: { email: "admin@irisatalier.test" },
     update: { passwordHash: adminPasswordHash },
     create: {
       name: "Admin User",
-      email: "admin@lunacicek.test",
+      email: "admin@irisatalier.test",
       phone: "05320000000",
       role: UserRole.ADMIN,
       passwordHash: adminPasswordHash,

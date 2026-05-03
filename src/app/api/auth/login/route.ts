@@ -18,8 +18,9 @@ export async function POST(request: Request) {
   }
 
   const { email, password, redirectTo } = parsed.data;
-  const adminUser = verifyAdminCredentials(email, password);
-  const user = adminUser ?? (await authenticateCustomerAccount(email, password));
+  const user =
+    verifyAdminCredentials(email, password) ??
+    (await authenticateCustomerAccount(email, password));
 
   if (!user) {
     return apiError("E-posta veya sifre hatali.", 401);

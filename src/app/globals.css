@@ -1,94 +1,116 @@
 @import "tailwindcss";
 
+/* ── Stitch "Vivid Botanic" Design System ── */
 :root {
-  --color-surface: #fdfaf8;
-  --color-card: #fff5f0;
-  --color-glass: rgba(255, 255, 255, 0.4);
-  --color-glass-strong: rgba(255, 255, 255, 0.75);
-  --color-line: rgba(82, 57, 62, 0.08);
-  --color-ink: #2a1f22;
-  --color-muted: #6f5d62;
-  --color-accent: #c45b6d;
-  --color-accent-dark: #a34252;
-  --color-leaf: #6b8a67;
-  --color-lavender: #d0c0dc;
-  --color-peach: #f2cdb8;
+  --primary: #aa2e28;
+  --primary-container: #cc473e;
+  --on-primary: #ffffff;
+  --primary-fixed: #ffdad6;
+  --primary-fixed-dim: #ffb4ab;
+
+  --secondary: #994700;
+  --secondary-container: #ff9248;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #6c3000;
+
+  --tertiary: #2a674c;
+  --tertiary-container: #448064;
+  --on-tertiary: #ffffff;
+  --on-tertiary-container: #f5fff7;
+
+  --surface: #fcf9f4;
+  --surface-dim: #dcdad5;
+  --surface-bright: #fcf9f4;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f6f3ee;
+  --surface-container: #f0ede9;
+  --surface-container-high: #ebe8e3;
+  --surface-container-highest: #e5e2dd;
+  --surface-variant: #e5e2dd;
+
+  --on-surface: #1c1c19;
+  --on-background: #1c1c19;
+  --on-surface-variant: #59413e;
+  --outline: #8c716d;
+  --outline-variant: #e0bfbb;
+
+  --error: #ba1a1a;
+  --error-container: #ffdad6;
+  --on-error: #ffffff;
+  --background: #fcf9f4;
+
+  --color-accent: #aa2e28;
+  --color-card: #f6f3ee;
+  --color-ink: #1c1c19;
+  --color-line: #e0bfbb;
+  --color-muted: #59413e;
 }
 
-@theme inline {
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: var(--font-sans), sans-serif;
-  background: var(--color-surface);
-  color: var(--color-ink);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-.font-serif {
-  font-family: var(--font-display), serif;
-  letter-spacing: -0.01em;
-}
-
-.panel {
-  border: 1px solid var(--color-line);
-  background: white;
-  border-radius: 2rem;
-  box-shadow: 0 20px 60px -20px rgba(71, 46, 56, 0.08);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-panel {
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  background: linear-gradient(135deg, var(--color-glass-strong), var(--color-glass));
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  box-shadow:
-    0 30px 60px -20px rgba(71, 46, 56, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.soft-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(48px);
-  opacity: 0.7;
-}
-
-@media (prefers-reduced-motion: reduce) {
+/* Force Tailwind base reset to use our colors */
+@layer base {
   html {
-    scroll-behavior: auto;
+    scroll-behavior: smooth;
+    background-color: #fcf9f4;
   }
 
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    background-color: #fcf9f4 !important;
+    color: #1c1c19;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
+
+  /* Remove any white backgrounds Tailwind sets */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+/* ── Section backgrounds ── */
+.bg-surface          { background-color: #fcf9f4 !important; }
+.bg-surface-low      { background-color: #f6f3ee !important; }
+.bg-surface-container { background-color: #f0ede9 !important; }
+.bg-surface-high     { background-color: #ebe8e3 !important; }
+
+/* ── Organic blob shapes ── */
+.organic-blob-1 { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+.organic-blob-2 { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+.organic-blob-3 { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+.organic-blob-4 { border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%; }
+
+/* ── Glassmorphism nav ── */
+.glass-nav {
+  background: rgba(252, 249, 244, 0.80) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background: linear-gradient(135deg, #aa2e28 0%, #cc473e 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 30px rgba(170, 46, 40, 0.22);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+
+.btn-ghost {
+  color: #aa2e28;
+  background: transparent;
+  transition: background 0.2s;
+}
+.btn-ghost:hover { background: #e5e2dd; }
+
+/* ── Focus visible ── */
+:where(a,button,input,select,textarea,[role="button"]):focus-visible {
+  outline: 3px solid rgba(170, 46, 40, 0.5);
+  outline-offset: 3px;
 }

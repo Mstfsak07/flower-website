@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/admin-guard";
-import { getAdminCouponsRepo } from "@/lib/repositories/admin-repository";
+import { createAdminCouponRepo, getAdminCouponsRepo } from "@/lib/repositories/admin-repository";
 import { safeJson } from "@/lib/request";
 import { adminCouponSchema } from "@/lib/schemas";
 
@@ -24,5 +24,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
 
-  return NextResponse.json({ ok: true, coupon: parsed.data }, { status: 201 });
+  const coupon = await createAdminCouponRepo(parsed.data);
+  return NextResponse.json({ ok: true, coupon }, { status: 201 });
 }

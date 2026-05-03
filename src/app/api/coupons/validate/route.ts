@@ -13,5 +13,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ errors: parsed.error.flatten() }, { status: 400 });
   }
 
-  return NextResponse.json(validateCoupon(parsed.data.code, parsed.data.subtotal));
+  return NextResponse.json(await validateCoupon(parsed.data.code, parsed.data.subtotal));
 }

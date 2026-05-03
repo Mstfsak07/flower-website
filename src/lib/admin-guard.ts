@@ -12,7 +12,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { readAuthSessionFromRequest } from "@/lib/auth-server";
+import { readAuthSessionFromRequest, readCurrentAuthUser, refreshSessionUser } from "@/lib/auth-server";
+import type { AuthUser } from "@/lib/types";
 import { env } from "@/lib/env";
 
 function readBearerToken(request: Pick<Request, "headers">) {
@@ -33,6 +34,15 @@ export function isAdminRequestAuthorized(request: Pick<Request, "headers">) {
   }
 
   return readBearerToken(request) === secret;
+}
+
+export async function readCurrentAdminUser(): Promise<AuthUser | null> {
+  const user = await refreshSessionUser(await readCurrentAuthUser());
+  return user?.role === "ADMIN" ? user : null;
+}
+
+export async function canCurrentUserAccessAdminPage() {
+  return Boolean(await readCurrentAdminUser());
 }
 
 export function requireAdmin(request: Request): NextResponse | null {

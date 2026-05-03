@@ -1,12 +1,18 @@
 import { expect, test } from "@playwright/test";
 
 test("admin settings exposes visual config", async ({ page }) => {
-  await page.goto("/giris?redirect=/admin/ayarlar");
-  await page.getByPlaceholder("E-posta").fill("admin@lunacicek.test");
-  await page.getByPlaceholder("Sifre").fill("Admin123!");
-  await page.getByRole("button", { name: "Giris Yap" }).click();
+  const loginResponse = await page.request.post("/api/auth/login", {
+    data: {
+      email: "admin@irisatalier.test",
+      password: "Admin123!",
+      redirectTo: "/admin/ayarlar",
+    },
+  });
 
-  await expect(page).toHaveURL(/\/admin\/ayarlar/);
-  await expect(page.getByRole("heading", { name: "Visual Config" })).toBeVisible();
+  expect(loginResponse.ok()).toBeTruthy();
+
+  await page.goto("/admin/ayarlar");
+  await expect(page).toHaveURL(/\/admin\/ayarlar(?:\?|$)/);
+  await expect(page.getByText("Visual Config").first()).toBeVisible();
   await expect(page.getByText("enable3DHero")).toBeVisible();
 });

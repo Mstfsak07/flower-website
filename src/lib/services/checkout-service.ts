@@ -1,13 +1,9 @@
-import { coupons, deliveryZones } from "@/lib/data";
 import type { CheckoutPayload } from "@/lib/types";
 import { calculateCouponDiscount, calculateGrandTotal } from "@/lib/commerce";
+import { findDeliveryZone, getCouponByCode } from "@/lib/services/catalog-service";
 
-export function validateCheckout(payload: CheckoutPayload) {
-  const zone = deliveryZones.find(
-    (entry) =>
-      entry.city.toLocaleLowerCase("tr-TR") === payload.city.toLocaleLowerCase("tr-TR") &&
-      entry.district.toLocaleLowerCase("tr-TR") === payload.district.toLocaleLowerCase("tr-TR"),
-  );
+export async function validateCheckout(payload: CheckoutPayload) {
+  const zone = await findDeliveryZone(payload.city, payload.district);
 
   return {
     deliveryZone: zone ?? null,
@@ -16,8 +12,8 @@ export function validateCheckout(payload: CheckoutPayload) {
   };
 }
 
-export function validateCoupon(code: string, subtotal: number) {
-  const coupon = coupons.find((entry) => entry.code === code);
+export async function validateCoupon(code: string, subtotal: number) {
+  const coupon = await getCouponByCode(code);
   if (!coupon) {
     return { valid: false, discountTotal: 0, reason: "Coupon not found" };
   }
@@ -30,8 +26,8 @@ export function validateCoupon(code: string, subtotal: number) {
   return { valid: true, discountTotal, coupon };
 }
 
-export function summarizeCheckout(subtotal: number, deliveryFee: number, code?: string) {
-  const result = code ? validateCoupon(code, subtotal) : { valid: false, discountTotal: 0 };
+export async function summarizeCheckout(subtotal: number, deliveryFee: number, code?: string) {
+  const result = code ? await validateCoupon(code, subtotal) : { valid: false, discountTotal: 0 };
   return {
     subtotal,
     discountTotal: result.discountTotal,

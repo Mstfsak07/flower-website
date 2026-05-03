@@ -2,12 +2,10 @@
 
 import {
   createContext,
-  startTransition,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { useRouter } from "next/navigation";
 
 import { getDefaultRouteByRole, sanitizeRedirectPath } from "@/lib/auth";
 import { storage } from "@/lib/storage";
@@ -58,8 +56,7 @@ function persistUser(user: AuthUser | null) {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const [user, setUser] = useState<AuthUser | null>(() => storage.getJson<AuthUser>(AUTH_USER_KEY));
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -112,10 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       getDefaultRouteByRole(authData.user.role),
     );
 
-    startTransition(() => {
-      router.replace(target);
-      router.refresh();
-    });
+    window.location.assign(target);
 
     return authData;
   }
@@ -140,10 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(authData.user);
     persistUser(authData.user);
 
-    startTransition(() => {
-      router.replace(authData.redirectTo);
-      router.refresh();
-    });
+    window.location.assign(authData.redirectTo);
 
     return authData;
   }
@@ -157,10 +148,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     persistUser(null);
 
-    startTransition(() => {
-      router.replace("/giris");
-      router.refresh();
-    });
+    window.location.assign("/giris");
   }
 
   return (

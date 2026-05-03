@@ -3,9 +3,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { toast } from "sonner";
 
-import { coupons, deliveryZones, getProductById, seedInquiries, seedOrders } from "@/lib/data";
-import { generateOrderNumber } from "@/lib/utils";
-import type { CartItem, CheckoutPayload, Order, OrderItem, WholesaleInquiry } from "@/lib/types";
+import { seedInquiries, seedOrders } from "@/lib/data";
+import type { CartItem, Order, WholesaleInquiry } from "@/lib/types";
 
 type StoreContextValue = {
   cart: CartItem[];
@@ -16,7 +15,7 @@ type StoreContextValue = {
   removeFromCart: (itemId: string) => void;
   updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
-  createOrder: (payload: CheckoutPayload) => Order;
+  recordOrder: (order: Order) => void;
   submitWholesaleInquiry: (
     payload: Omit<WholesaleInquiry, "id" | "status" | "createdAt" | "updatedAt">,
   ) => WholesaleInquiry;
@@ -111,83 +110,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       clearCart() {
         setCart([]);
       },
-      createOrder(payload) {
-        const items: OrderItem[] = cart.map((item) => {
-          const product = getProductById(item.productId);
-          const variant = product?.variants.find((entry) => entry.id === item.variantId);
-          const variantName = variant ? `${variant.name}: ${variant.value}` : undefined;
-          return {
-            id: crypto.randomUUID(),
-            productId: item.productId,
-            productName: product?.name ?? "Urun",
-            variantName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            totalPrice: item.unitPrice * item.quantity,
-            note: item.note,
-            selectedOptionsJson: JSON.stringify(item.selectedOptions ?? {}),
-          };
-        });
-
-        const subtotal = items.reduce((total, item) => total + item.totalPrice, 0);
-        const coupon = coupons.find((entry) => entry.code === payload.couponCode);
-        let discountTotal = 0;
-        if (coupon && subtotal >= coupon.minOrderAmount) {
-          if (coupon.type === "PERCENT") {
-            discountTotal = Math.round((subtotal * coupon.value) / 100);
-          } else {
-            discountTotal = coupon.value;
-          }
-
-          if (coupon.maxDiscountAmount) {
-            discountTotal = Math.min(discountTotal, coupon.maxDiscountAmount);
-          }
-        }
-
-        const zone =
-          deliveryZones.find(
-            (entry) =>
-              entry.city.toLocaleLowerCase("tr-TR") === payload.city.toLocaleLowerCase("tr-TR") &&
-              entry.district.toLocaleLowerCase("tr-TR") ===
-                payload.district.toLocaleLowerCase("tr-TR"),
-          ) ?? deliveryZones[0];
-
-        const now = new Date().toISOString();
-        const order: Order = {
-          id: crypto.randomUUID(),
-          orderNumber: generateOrderNumber(),
-          status: payload.paymentMethod === "CARD" ? "PAID" : "PENDING",
-          paymentStatus: payload.paymentMethod === "CARD" ? "PAID" : "UNPAID",
-          paymentMethod: payload.paymentMethod,
-          subtotal,
-          discountTotal,
-          deliveryFee: zone?.fee ?? 0,
-          grandTotal: subtotal - discountTotal + (zone?.fee ?? 0),
-          customerName: payload.customerName,
-          customerPhone: payload.customerPhone,
-          customerEmail: payload.customerEmail,
-          recipientName: payload.recipientName,
-          recipientPhone: payload.recipientPhone,
-          deliveryDate: payload.deliveryDate,
-          deliverySlot: payload.deliverySlot,
-          cardMessage: payload.cardMessage,
-          note: payload.note,
-          addressSnapshotJson: JSON.stringify({
-            city: payload.city,
-            district: payload.district,
-            neighborhood: payload.neighborhood,
-            addressLine: payload.addressLine,
-          }),
-          couponCode: payload.couponCode,
-          items,
-          createdAt: now,
-          updatedAt: now,
-        };
-
-        setOrders((current) => [order, ...current]);
+      recordOrder(order) {
+        setOrders((current) => [order, ...current.filter((entry) => entry.orderNumber !== order.orderNumber)]);
         setCart([]);
         toast.success("Siparis olusturuldu.");
-        return order;
       },
       submitWholesaleInquiry(payload) {
         const now = new Date().toISOString();

@@ -3,13 +3,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
 import { AlertCircle, CheckCircle2, CreditCard, Lock, ShieldCheck, Truck } from "lucide-react";
 
+import { CheckoutConsentFields } from "@/components/checkout-consent-fields";
 import { useStore } from "@/components/providers/store-provider";
 import { coupons, getProductById } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
+import type { Order } from "@/lib/types";
 
 const schema = z.object({
   customerName: z.string().min(2),
@@ -30,16 +33,37 @@ const schema = z.object({
   confirmRecipient: z.literal(true, {
     message: "Teslimat bilgilerini kontrol etmelisin.",
   }),
-  acceptTerms: z.literal(true, {
-    message: "Siparis onayi icin kosullari kabul etmelisin.",
+  acceptDistanceSales: z.boolean().refine(Boolean, {
+    message: "Mesafeli Satış Sözleşmesini kabul etmelisin.",
+  }),
+  readPrivacyPolicy: z.boolean().refine(Boolean, {
+    message: "Gizlilik Politikasını okuduğunu onaylamalısın.",
+  }),
+  readReturnPolicy: z.boolean().refine(Boolean, {
+    message: "İade ve İptal Koşullarını okuduğunu onaylamalısın.",
   }),
 });
 
 type FormValues = z.infer<typeof schema>;
 
+type CheckoutValidationResponse = {
+  deliveryZone: {
+    cutoffHour: number;
+    fee: number;
+    minDeliveryHours: number;
+    name: string;
+    sameDayAvailable: boolean;
+  } | null;
+  paymentOptions: Array<"CARD" | "BANK_TRANSFER" | "CASH_ON_DELIVERY">;
+  supportsSameDay: boolean;
+};
+
 export function CheckoutPageView() {
   const router = useRouter();
-  const { cart, hydrated, createOrder } = useStore();
+  const { cart, hydrated, recordOrder } = useStore();
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [checkoutValidation, setCheckoutValidation] = useState<CheckoutValidationResponse | null>(null);
+  const [validationLoading, setValidationLoading] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -50,7 +74,9 @@ export function CheckoutPageView() {
       deliverySlot: "12:00 - 15:00",
       paymentMethod: "CARD",
       confirmRecipient: true,
-      acceptTerms: true,
+      acceptDistanceSales: false,
+      readPrivacyPolicy: false,
+      readReturnPolicy: false,
     },
   });
 
@@ -61,6 +87,9 @@ export function CheckoutPageView() {
     control: form.control,
     name: "couponCode",
   });
+  const checkoutSnapshot = useWatch({
+    control: form.control,
+  });
   const coupon = coupons.find((entry) => entry.code === couponCode);
   const discount =
     coupon && subtotal >= coupon.minOrderAmount
@@ -69,6 +98,82 @@ export function CheckoutPageView() {
         : coupon.value
       : 0;
   const total = subtotal - discount + deliveryFee;
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    if (
+      !checkoutSnapshot?.customerName ||
+      !checkoutSnapshot.customerPhone ||
+      !checkoutSnapshot.customerEmail ||
+      !checkoutSnapshot.recipientName ||
+      !checkoutSnapshot.recipientPhone ||
+      !checkoutSnapshot.city ||
+      !checkoutSnapshot.district ||
+      !checkoutSnapshot.neighborhood ||
+      !checkoutSnapshot.addressLine ||
+      !checkoutSnapshot.deliveryDate ||
+      !checkoutSnapshot.deliverySlot ||
+      !checkoutSnapshot.paymentMethod
+    ) {
+      const resetTimer = window.setTimeout(() => {
+        setCheckoutValidation(null);
+      }, 0);
+
+      return () => {
+        window.clearTimeout(resetTimer);
+      };
+    }
+
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      setValidationLoading(true);
+      fetch("/api/checkout/validate", {
+        body: JSON.stringify({
+          ...checkoutSnapshot,
+          cardMessage: checkoutSnapshot.cardMessage ?? "",
+          couponCode: checkoutSnapshot.couponCode ?? "",
+          note: checkoutSnapshot.note ?? "",
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        signal: controller.signal,
+      })
+        .then(async (response) => {
+          if (!response.ok) {
+            throw new Error("Teslimat kurallari alinmadi.");
+          }
+
+          return (await response.json()) as CheckoutValidationResponse;
+        })
+        .then((result) => {
+          setCheckoutValidation(result);
+          setSubmitError(null);
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted) {
+            return;
+          }
+
+          setCheckoutValidation(null);
+          setSubmitError(error instanceof Error ? error.message : "Teslimat kurallari dogrulanamadi.");
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) {
+            setValidationLoading(false);
+          }
+        });
+    }, 300);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
+  }, [checkoutSnapshot, hydrated]);
 
   if (!hydrated) {
     return (
@@ -141,9 +246,93 @@ export function CheckoutPageView() {
     <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_24rem] lg:px-8">
       <form
         className="panel grid gap-5 p-8"
-        onSubmit={form.handleSubmit((values) => {
-          const order = createOrder(values);
-          router.push(`/siparis-basarili?orderNumber=${order.orderNumber}`);
+        onSubmit={form.handleSubmit(async (values) => {
+          setSubmitError(null);
+
+          const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...values,
+              items: cart.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                variantId: item.variantId,
+                note: item.note,
+                selectedOptions: item.selectedOptions,
+              })),
+            }),
+          });
+
+          const result = (await response.json().catch(() => null)) as
+            | {
+                ok?: boolean;
+                orderNumber?: string;
+                grandTotal?: number;
+                message?: string;
+              }
+            | null;
+
+          if (!response.ok || !result?.orderNumber) {
+            setSubmitError(result?.message ?? "Siparis olusturulamadi. Lutfen tekrar dene.");
+            return;
+          }
+
+          const now = new Date().toISOString();
+          const fallbackOrder: Order = {
+            id: result.orderNumber,
+            orderNumber: result.orderNumber,
+            status: "PENDING",
+            paymentStatus: values.paymentMethod === "CASH_ON_DELIVERY" ? "UNPAID" : "UNPAID",
+            paymentMethod: values.paymentMethod,
+            subtotal,
+            discountTotal: discount,
+            deliveryFee,
+            grandTotal: result.grandTotal ?? total,
+            customerName: values.customerName,
+            customerPhone: values.customerPhone,
+            customerEmail: values.customerEmail,
+            recipientName: values.recipientName,
+            recipientPhone: values.recipientPhone,
+            deliveryDate: values.deliveryDate,
+            deliverySlot: values.deliverySlot,
+            cardMessage: values.cardMessage,
+            note: values.note,
+            addressSnapshotJson: JSON.stringify({
+              city: values.city,
+              district: values.district,
+              neighborhood: values.neighborhood,
+              addressLine: values.addressLine,
+            }),
+            couponCode: values.couponCode,
+            items: items
+              .filter(({ product }) => Boolean(product))
+              .map(({ item, product }) => ({
+                id: item.id,
+                productId: item.productId,
+                productName: product?.name ?? "Urun",
+                variantName: undefined,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                totalPrice: item.unitPrice * item.quantity,
+                note: item.note,
+                selectedOptionsJson: item.selectedOptions
+                  ? JSON.stringify(item.selectedOptions)
+                  : undefined,
+              })),
+            createdAt: now,
+            updatedAt: now,
+          };
+
+          const trackResponse = await fetch(`/api/orders/${encodeURIComponent(result.orderNumber)}/track`);
+          const canonicalOrder = trackResponse.ok
+            ? ((await trackResponse.json()) as Order)
+            : fallbackOrder;
+
+          recordOrder(canonicalOrder);
+          router.push(`/siparis-basarili?orderNumber=${result.orderNumber}`);
         })}
       >
         <div>
@@ -264,6 +453,45 @@ export function CheckoutPageView() {
           </div>
         </div>
 
+        <div className="grid gap-3 rounded-[1.5rem] border border-[var(--color-line)] bg-white/80 p-5 text-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <div className="font-semibold text-[var(--color-ink)]">Teslimat kurallari</div>
+              <div className="mt-1 text-[var(--color-muted)]">
+                Bolge, ayni gun uygunlugu ve cutoff saati siparis oncesi kontrol edilir.
+              </div>
+            </div>
+            {validationLoading ? (
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-muted)]">
+                Kontrol
+              </span>
+            ) : null}
+          </div>
+          {checkoutValidation?.deliveryZone ? (
+            <div className="grid gap-2 text-[var(--color-muted)]">
+              <div>
+                <span className="font-semibold text-[var(--color-ink)]">{checkoutValidation.deliveryZone.name}</span>
+                {" "}icin teslimat ucreti{" "}
+                <span className="font-semibold text-[var(--color-ink)]">
+                  {formatPrice(checkoutValidation.deliveryZone.fee)}
+                </span>
+                .
+              </div>
+              <div>
+                Minimum hazirlama suresi {checkoutValidation.deliveryZone.minDeliveryHours} saat, ayni gun teslimat{" "}
+                {checkoutValidation.supportsSameDay ? "aktif" : "kapali"}.
+              </div>
+              <div>
+                Cutoff saati: {checkoutValidation.deliveryZone.cutoffHour}:00. Bu saatten sonraki siparisler bir sonraki planlamaya kayabilir.
+              </div>
+            </div>
+          ) : (
+            <div className="text-[var(--color-muted)]">
+              Teslimat bolgesi dogrulanana kadar sehir, ilce ve alici alanlarini doldur.
+            </div>
+          )}
+        </div>
+
         <div className="grid gap-3">
           <label className="flex items-start gap-3 rounded-[1.25rem] border border-[var(--color-line)] bg-white px-4 py-4 text-sm text-[var(--color-muted)]">
             <input className="mt-1 size-4" type="checkbox" {...form.register("confirmRecipient")} />
@@ -277,26 +505,44 @@ export function CheckoutPageView() {
               {form.formState.errors.confirmRecipient.message}
             </p>
           ) : null}
-          <label className="flex items-start gap-3 rounded-[1.25rem] border border-[var(--color-line)] bg-white px-4 py-4 text-sm text-[var(--color-muted)]">
-            <input className="mt-1 size-4" type="checkbox" {...form.register("acceptTerms")} />
-            <span>
-              Mesafeli satis ve teslimat kosullarini kabul ediyor, siparisimin hazirlanmasi icin onay veriyorum.
-            </span>
-          </label>
-          {form.formState.errors.acceptTerms ? (
+          <CheckoutConsentFields
+            distanceSalesInputProps={form.register("acceptDistanceSales")}
+            privacyInputProps={form.register("readPrivacyPolicy")}
+            returnPolicyInputProps={form.register("readReturnPolicy")}
+          />
+          {form.formState.errors.acceptDistanceSales ? (
             <p className="flex items-center gap-2 text-sm text-red-600">
               <AlertCircle className="size-4" />
-              {form.formState.errors.acceptTerms.message}
+              {form.formState.errors.acceptDistanceSales.message}
+            </p>
+          ) : null}
+          {form.formState.errors.readPrivacyPolicy ? (
+            <p className="flex items-center gap-2 text-sm text-red-600">
+              <AlertCircle className="size-4" />
+              {form.formState.errors.readPrivacyPolicy.message}
+            </p>
+          ) : null}
+          {form.formState.errors.readReturnPolicy ? (
+            <p className="flex items-center gap-2 text-sm text-red-600">
+              <AlertCircle className="size-4" />
+              {form.formState.errors.readReturnPolicy.message}
             </p>
           ) : null}
         </div>
 
         <button
+          disabled={form.formState.isSubmitting || Boolean(checkoutValidation && !checkoutValidation.deliveryZone)}
           className="rounded-full bg-[var(--color-ink)] px-6 py-3 text-sm font-semibold text-white"
           type="submit"
         >
-          Siparisi Tamamla
+          {form.formState.isSubmitting ? "Siparis Olusturuluyor" : "Siparisi Tamamla"}
         </button>
+        {submitError ? (
+          <p className="flex items-center gap-2 text-sm text-red-600">
+            <AlertCircle className="size-4" />
+            {submitError}
+          </p>
+        ) : null}
       </form>
 
       <aside className="panel h-fit space-y-5 p-6">
@@ -356,7 +602,7 @@ export function CheckoutPageView() {
             <ShieldCheck className="mt-0.5 size-4 text-[var(--color-accent)]" />
             <div>
               <div className="font-semibold text-[var(--color-ink)]">Guvenli onay</div>
-              <div className="mt-1 leading-6">Form onaylari tamamlanmadan siparis olusturulmaz.</div>
+              <div className="mt-1 leading-6">Toplam ve urun verileri siparis aninda sunucuda yeniden dogrulanir.</div>
             </div>
           </div>
         </div>
