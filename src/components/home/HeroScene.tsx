@@ -46,10 +46,7 @@ const petals = [
 
 const serifFont = { fontFamily: "var(--font-display), 'Noto Serif', serif" } as const;
 
-// Ayni gorselin yalnizca alt kose cicekleri: derinlik (on plan) katmani.
-// Gercek seffaf PNG kesitleri gelince bu maske yerine onlar kullanilir.
-const foregroundMask =
-  "radial-gradient(ellipse 30% 42% at 0% 100%, #000 45%, transparent 100%), radial-gradient(ellipse 24% 36% at 100% 100%, #000 40%, transparent 100%)";
+const roseMask = "linear-gradient(to bottom, #000 70%, transparent 84%)";
 
 export function HeroScene({
   eyebrow,
@@ -84,8 +81,14 @@ export function HeroScene({
   // Katmanlar: uzak olan az, yakin olan cok hareket eder.
   const bgX = useTransform(sx, (v) => v * -14);
   const bgY = useTransform(sy, (v) => v * -9);
-  const fgX = useTransform(sx, (v) => v * -42);
-  const fgY = useTransform(sy, (v) => v * -26);
+  const roseX = useTransform(sx, (v) => v * -22);
+  const roseY = useTransform(sy, (v) => v * -14);
+  const roseRotY = useTransform(sx, (v) => v * 8);
+  const roseRotX = useTransform(sy, (v) => v * -5);
+  const fgSlowX = useTransform(sx, (v) => v * -40);
+  const fgSlowY = useTransform(sy, (v) => v * -24);
+  const fgFastX = useTransform(sx, (v) => v * -66);
+  const fgFastY = useTransform(sy, (v) => v * -40);
 
   // Cam paneller: taban egimi + fareye tepki.
   const leftRotY = useTransform(sx, (v) => 8 + v * 5);
@@ -123,22 +126,72 @@ export function HeroScene({
       onPointerLeave={handlePointerLeave}
       onPointerMove={handlePointerMove}
     >
-      {/* Arka plan: en uzak katman */}
-      <motion.div
-        className="absolute -inset-[4%] -z-30"
-        style={tiltEnabled ? { x: bgX, y: bgY } : undefined}
-      >
-        <div className="hero-zoom absolute inset-0">
-          <Image
-            alt=""
-            className="object-cover object-[50%_38%]"
-            fill
-            priority
-            sizes="108vw"
-            src="/hero/hero-bg.png"
-          />
+      {/* Sahne: arka plan ve gul ayni kutuda, boylece hizalari her ekranda korunur */}
+      <div className="absolute inset-0 -z-30 [container-type:size]">
+        <div
+          className="absolute"
+          style={{
+            left: "50%",
+            top: "38%",
+            width: "calc(max(100cqw, 100cqh * 1.77685) * 1.06)",
+            aspectRatio: "1672 / 941",
+            transform: "translate(-50%, -38%)",
+          }}
+        >
+          <div className="hero-zoom absolute inset-0">
+            <motion.div
+              className="absolute inset-0"
+              style={tiltEnabled ? { x: bgX, y: bgY } : undefined}
+            >
+              <Image
+                alt=""
+                className="object-cover"
+                fill
+                priority
+                sizes="110vw"
+                src="/hero/scene.png"
+              />
+            </motion.div>
+
+            <motion.div
+              className="absolute inset-0"
+              style={tiltEnabled ? { x: roseX, y: roseY } : undefined}
+            >
+              <div
+                aria-hidden
+                className="hero-rose-glow absolute"
+                style={{ left: "31%", top: "10%", width: "38%", aspectRatio: "1 / 1" }}
+              />
+              <motion.div
+                className="absolute"
+                style={{
+                  left: "37.5%",
+                  top: "16.4%",
+                  width: "25%",
+                  aspectRatio: "1 / 1",
+                  ...(tiltEnabled
+                    ? { transformPerspective: 900, rotateY: roseRotY, rotateX: roseRotX }
+                    : {}),
+                }}
+              >
+                <div
+                  className="hero-rose-sway relative size-full"
+                  style={{ maskImage: roseMask, WebkitMaskImage: roseMask }}
+                >
+                  <Image
+                    alt=""
+                    className="object-contain"
+                    fill
+                    priority
+                    sizes="30vw"
+                    src="/hero/layers/rose.png"
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="absolute inset-0 -z-20 bg-[linear-gradient(180deg,rgba(24,10,44,0.38)_0%,rgba(24,10,44,0)_28%,rgba(24,10,44,0)_55%,rgba(24,10,44,0.6)_100%)]" />
 
@@ -161,25 +214,66 @@ export function HeroScene({
         ))}
       </div>
 
-      {/* On plan cicekleri: en yakin katman, en cok hareket eden */}
-      <motion.div
-        aria-hidden
-        className="pointer-events-none absolute -inset-[4%] -z-10 hidden lg:block"
-        style={tiltEnabled ? { x: fgX, y: fgY } : undefined}
-      >
-        <div
-          className="hero-zoom absolute inset-0"
-          style={{ maskImage: foregroundMask, WebkitMaskImage: foregroundMask }}
+      {/* On plan: kameraya yakin, en cok hareket eden katmanlar */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <motion.div
+          className="absolute inset-0"
+          style={tiltEnabled ? { x: fgSlowX, y: fgSlowY } : undefined}
         >
           <Image
             alt=""
-            className="object-cover object-[50%_38%]"
-            fill
-            sizes="108vw"
-            src="/hero/hero-bg.png"
+            className="absolute"
+            height={1000}
+            src="/hero/layers/cluster.png"
+            style={{ left: "-4vw", bottom: "-7vw", width: "clamp(200px, 30vw, 620px)", height: "auto" }}
+            width={1000}
           />
-        </div>
-      </motion.div>
+          <div className="hero-float absolute hidden lg:block" style={{ right: "1vw", top: "46%" }}>
+            <Image
+              alt=""
+              height={750}
+              src="/hero/layers/petals.png"
+              style={{ width: "clamp(150px, 18vw, 380px)", height: "auto" }}
+              width={1000}
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="absolute inset-0"
+          style={tiltEnabled ? { x: fgFastX, y: fgFastY } : undefined}
+        >
+          <Image
+            alt=""
+            className="absolute"
+            height={750}
+            priority
+            src="/hero/layers/branches.png"
+            style={{
+              right: "-6vw",
+              bottom: "-9vw",
+              width: "clamp(240px, 40vw, 780px)",
+              height: "auto",
+              transform: "scaleX(-1)",
+            }}
+            width={1000}
+          />
+          <Image
+            alt=""
+            className="absolute hidden lg:block"
+            height={1000}
+            src="/hero/layers/bloom.png"
+            style={{
+              left: "-5vw",
+              top: "46%",
+              width: "clamp(110px, 14vw, 300px)",
+              height: "auto",
+              transform: "rotate(-24deg)",
+            }}
+            width={1000}
+          />
+        </motion.div>
+      </div>
 
       <div className="relative mx-auto flex min-h-[100svh] w-full max-w-7xl flex-col px-4 pb-6 pt-28 sm:px-6 lg:px-8">
         <div className="grid flex-1 items-center gap-8 py-6 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)_minmax(0,19rem)]">
