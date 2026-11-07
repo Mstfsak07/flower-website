@@ -114,3 +114,64 @@
   outline: 3px solid rgba(170, 46, 40, 0.5);
   outline-offset: 3px;
 }
+
+
+/* ── Hero sahnesi: cam yüzeyler, yavaş zoom, süzülme, düşen yapraklar ── */
+.hero-glass {
+  background: linear-gradient(145deg, rgba(52, 26, 84, 0.5), rgba(30, 14, 52, 0.36));
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow:
+    0 30px 80px -30px rgba(20, 8, 40, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+}
+
+.hero-zoom {
+  animation: hero-zoom 32s ease-in-out infinite alternate;
+  transform-origin: 50% 45%;
+  will-change: transform;
+}
+
+.hero-float {
+  animation: hero-float 9s ease-in-out infinite;
+  will-change: transform;
+}
+
+.hero-petal {
+  position: absolute;
+  top: 0;
+  left: var(--left);
+  width: var(--size);
+  height: calc(var(--size) * 1.35);
+  border-radius: 85% 0 85% 0;
+  background: radial-gradient(circle at 30% 25%, #ff8da1 0%, #d62a4a 55%, #8f1230 100%);
+  opacity: 0;
+  pointer-events: none;
+  animation: petal-fall var(--dur) linear var(--delay) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -12px, 0); }
+}
+
+@keyframes petal-fall {
+  0% { transform: translate3d(0, -12vh, 0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.9; }
+  50% { transform: translate3d(calc(var(--drift) * 0.5), 52vh, 0) rotate(210deg); }
+  88% { opacity: 0.85; }
+  100% { transform: translate3d(var(--drift), 112vh, 0) rotate(430deg); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-zoom,
+  .hero-float { animation: none; }
+  .hero-petal { display: none; }
+}

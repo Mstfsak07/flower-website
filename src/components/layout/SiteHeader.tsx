@@ -40,7 +40,7 @@ export function SiteHeader({ locale }: SiteHeaderProps) {
   return (
     <header className={`${sans.className} fixed inset-x-0 top-0 z-50 px-4 py-4 md:px-8`}>
       <div className="mx-auto w-full max-w-7xl">
-        <div className="rounded-[1.9rem] bg-[#fcf9f4]/88 px-4 py-3 shadow-[0_18px_50px_-36px_rgba(170,46,40,0.16)] ring-1 ring-[#e3c5bf]/80 backdrop-blur-md">
+        <div className="hero-glass rounded-[1.9rem] px-4 py-3">
           <div className="flex items-center justify-between gap-2 sm:gap-3">
             <div className="flex items-center gap-2">
               <button
@@ -56,10 +56,10 @@ export function SiteHeader({ locale }: SiteHeaderProps) {
                 <IrisMark className="h-6 w-6" />
               </span>
               <span className="flex min-w-0 flex-col leading-none">
-                <span className={`${serif.className} truncate text-xl tracking-tight text-[#6b5ca5] sm:text-2xl`}>
+                <span className={`${serif.className} truncate text-xl tracking-tight text-white sm:text-2xl`}>
                   Riva Çiçekçilik
                 </span>
-                <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8c716d] sm:block">
+                <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-white/70 sm:block">
                   Floral Atelier
                 </span>
               </span>
@@ -69,7 +69,7 @@ export function SiteHeader({ locale }: SiteHeaderProps) {
             <nav className="hidden items-center gap-7 lg:flex xl:gap-9">
               {links.map((item) => (
                 <Link
-                  className="border-b-2 border-transparent pb-1.5 text-[15px] font-extrabold uppercase tracking-[0.12em] text-[#4b332f] transition-colors duration-300 hover:text-[#aa2e28]"
+                  className="border-b-2 border-transparent pb-1.5 text-[13px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-colors duration-300 hover:border-white/70 hover:text-white"
                   href={item.href}
                   key={item.href}
                   prefetch={false}
