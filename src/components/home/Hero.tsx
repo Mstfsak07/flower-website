@@ -90,6 +90,7 @@ export function Hero({ locale }: HeroProps) {
       }}
       primaryCta={{ label: t.primary, href: "/magaza" }}
       secondaryCta={{ label: t.secondary, href: "/toptan" }}
+      scrollLabel={locale === "tr" ? "Ke\u015ffetmeye ba\u015fla" : "Scroll to explore"}
       subtitle={t.subtitle}
       tagline={t.tagline}
     />
