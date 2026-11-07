@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
-
 import { LayoutChrome } from "@/components/layout-chrome";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Providers } from "@/components/providers/providers";
@@ -10,18 +8,6 @@ import { siteSettings } from "@/lib/data";
 import { getDictionary, getLocale } from "@/lib/i18n";
 import { getSiteUrlOrigin } from "@/lib/site-url";
 import "./globals.css";
-
-const notoSerif = Noto_Serif({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: siteSettings.seoTitle,
@@ -45,14 +31,14 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${notoSerif.variable} ${plusJakarta.variable}`}
-      style={{ backgroundColor: "#fcf9f4" }}
+      className="riva-root"
+      style={{ backgroundColor: "#0b0809" }}
     >
       <body style={{
         margin: 0,
-        backgroundColor: "#fcf9f4",
-        color: "#1c1c19",
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        backgroundColor: "#0b0809",
+        color: "#f3eadb",
+        fontFamily: "Arial, sans-serif",
         overflowX: "hidden",
         WebkitFontSmoothing: "antialiased",
       }}>
