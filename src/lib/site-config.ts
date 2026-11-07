@@ -1,6 +1,6 @@
 export const siteConfig = {
   companyName: "{{company_name}}",
-  brandName: "İris Atalier",
+  brandName: "Riva Çiçekçilik",
   taxOffice: "{{tax_office}}",
   taxNumber: "{{tax_number}}",
   mersisNo: "{{mersis_no}}",

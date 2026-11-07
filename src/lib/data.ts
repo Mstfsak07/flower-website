@@ -13,17 +13,17 @@ import type {
 import type { Locale } from "@/lib/locale";
 
 export const siteSettings: SiteSettings = {
-  storeName: "Iris Atalier",
+  storeName: "Riva Çiçekçilik",
   phone: "0 (532) 456 78 90",
   whatsapp: "+905324567890",
   address: "Konyaalti / Antalya",
-  instagram: "https://instagram.com/irisatalier",
-  facebook: "https://facebook.com/irisatalier",
+  instagram: "https://instagram.com/rivacicekantalya",
+  facebook: "https://facebook.com/rivacicekantalya",
   deliveryCutoffHour: 15,
   defaultDeliveryFee: 120,
-  seoTitle: "Iris Atalier | Yerel cicekciden premium siparis deneyimi",
+  seoTitle: "Riva Çiçekçilik | Yerel cicekciden premium siparis deneyimi",
   seoDescription:
-    "Buket, premium aranjman, saksi cicegi ve etkinlik tasarimlari icin Iris Atalier'den dogrudan siparis.",
+    "Buket, premium aranjman, saksi cicegi ve etkinlik tasarimlari icin Riva Çiçekçilik'ten dogrudan siparis.",
 };
 
 export const heroSlides: HeroSlide[] = [
@@ -752,17 +752,17 @@ export const contentPages: ContentPage[] = [
     id: "content-1",
     title: "Gizlilik Politikasi",
     slug: "gizlilik-politikasi",
-    seoTitle: "Gizlilik Politikasi | Iris Atalier",
+    seoTitle: "Gizlilik Politikasi | Riva Çiçekçilik",
     seoDescription: "Kisisel verilerin islenmesi ve korunmasina dair bilgilendirme.",
     isPublished: true,
     content:
-      "Iris Atalier, siparis ve iletisim sureclerinde paylasilan bilgileri sadece hizmetin sunulmasi, siparis takibi ve yasal zorunluluklar kapsaminda kullanir. Veriler izinsiz ucuncu taraflarla pazarlama amacli paylasilmaz.",
+      "Riva Çiçekçilik, siparis ve iletisim sureclerinde paylasilan bilgileri sadece hizmetin sunulmasi, siparis takibi ve yasal zorunluluklar kapsaminda kullanir. Veriler izinsiz ucuncu taraflarla pazarlama amacli paylasilmaz.",
   },
   {
     id: "content-2",
     title: "Mesafeli Satis Sozlesmesi",
     slug: "mesafeli-satis-sozlesmesi",
-    seoTitle: "Mesafeli Satis Sozlesmesi | Iris Atalier",
+    seoTitle: "Mesafeli Satis Sozlesmesi | Riva Çiçekçilik",
     seoDescription: "Siparis, teslimat ve cayma sartlarini aciklayan sozlesme.",
     isPublished: true,
     content:
@@ -772,7 +772,7 @@ export const contentPages: ContentPage[] = [
     id: "content-3",
     title: "On Bilgilendirme Formu",
     slug: "on-bilgilendirme-formu",
-    seoTitle: "On Bilgilendirme Formu | Iris Atalier",
+    seoTitle: "On Bilgilendirme Formu | Riva Çiçekçilik",
     seoDescription: "Siparis oncesi temel bilgilendirme ozeti.",
     isPublished: true,
     content:
@@ -782,7 +782,7 @@ export const contentPages: ContentPage[] = [
     id: "content-4",
     title: "Teslimat ve Iade",
     slug: "teslimat-ve-iade",
-    seoTitle: "Teslimat ve Iade | Iris Atalier",
+    seoTitle: "Teslimat ve Iade | Riva Çiçekçilik",
     seoDescription: "Teslimat saatleri, iade ve iptal kosullari.",
     isPublished: true,
     content:

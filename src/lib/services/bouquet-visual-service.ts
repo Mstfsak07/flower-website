@@ -60,7 +60,7 @@ function buildFallbackVisualDataUrl(input: z.infer<typeof bouquetVisualInputSche
       ${leaves}
       <path d="M510 420 C490 540 498 640 512 760" stroke="#9c8a57" stroke-width="14" fill="none" stroke-linecap="round" />
       <rect x="388" y="720" width="248" height="118" rx="28" fill="#d6c4a1" fill-opacity="0.18" stroke="#d6c4a1" stroke-opacity="0.2" />
-      <text x="160" y="162" fill="#f3d98b" font-family="Georgia, serif" font-size="34" letter-spacing="4">IRIS ATALIER AI</text>
+      <text x="160" y="162" fill="#f3d98b" font-family="Georgia, serif" font-size="34" letter-spacing="4">RIVA ÇİÇEKÇİLİK AI</text>
       <text x="160" y="820" fill="#ffffff" font-family="Georgia, serif" font-size="52">${input.title}</text>
       <text x="160" y="870" fill="#d7d0c4" font-family="Arial, sans-serif" font-size="28">${summary}</text>
     </svg>

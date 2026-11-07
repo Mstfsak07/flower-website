@@ -8,14 +8,14 @@ const copy = {
     eyebrow: "Felsefemiz",
     title1: "Doğadan ilham alarak,",
     title2: "zarafet için tasarlandı.",
-    text: "Iris Atalier, yüksek tasarım anlayışını sürdürülebilir dokunuşlarla her aranjmanda bir araya getirir. Her çiçek, her düzenleme bilinçli bir seçimdir.",
+    text: "Riva Çiçekçilik, yüksek tasarım anlayışını sürdürülebilir dokunuşlarla her aranjmanda bir araya getirir. Her çiçek, her düzenleme bilinçli bir seçimdir.",
     cta: "Hikayemizi Oku",
   },
   en: {
     eyebrow: "Our Philosophy",
     title1: "Inspired by nature,",
     title2: "crafted for elegance.",
-    text: "Iris Atalier brings high-end floral direction and sustainable practices into every arrangement. Every bloom, every decision is made with intention.",
+    text: "Riva Çiçekçilik brings high-end floral direction and sustainable practices into every arrangement. Every bloom, every decision is made with intention.",
     cta: "Read Our Story",
   },
 } as const;

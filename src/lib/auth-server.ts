@@ -223,9 +223,9 @@ export function hashPassword(password: string) {
 
 export function getDemoAdminCredentials() {
   return {
-    email: normalizeEmail(env.ADMIN_EMAIL || "admin@irisatalier.test"),
+    email: normalizeEmail(env.ADMIN_EMAIL || "admin@rivacicekantalya.test"),
     password: env.ADMIN_PASSWORD || "Admin123!",
-    name: "Iris Atalier Admin",
+    name: "Riva Çiçekçilik Admin",
   };
 }
 
@@ -239,7 +239,7 @@ export function verifyAdminCredentials(email: string, password: string): AuthUse
   const acceptsConfiguredAdmin = normalizedEmail === admin.email && password === admin.password;
   const acceptsDefaultLocalAdmin =
     !env.isProduction &&
-    normalizedEmail === "admin@irisatalier.test" &&
+    normalizedEmail === "admin@rivacicekantalya.test" &&
     password === "Admin123!";
 
   if (!acceptsConfiguredAdmin && !acceptsDefaultLocalAdmin) {
@@ -247,7 +247,7 @@ export function verifyAdminCredentials(email: string, password: string): AuthUse
   }
 
   return {
-    email: acceptsConfiguredAdmin ? admin.email : "admin@irisatalier.test",
+    email: acceptsConfiguredAdmin ? admin.email : "admin@rivacicekantalya.test",
     emailVerified: true,
     id: "demo-admin",
     name: admin.name,

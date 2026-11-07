@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   const { fullName, email, phone, message } = parsed.data;
 
   sendMail({
-    to: process.env.ADMIN_EMAIL ?? "admin@irisatalier.test",
+    to: process.env.ADMIN_EMAIL ?? "admin@rivacicekantalya.test",
     subject: `Iletisim formu — ${fullName}`,
     html: `<div style="font-family:Arial,sans-serif;color:#3c2b30">
       <h2>Yeni iletisim mesaji</h2>

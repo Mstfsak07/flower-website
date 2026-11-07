@@ -54,7 +54,7 @@ async function deliverNotification(input: {
 }
 
 function adminRecipient() {
-  return env.ADMIN_EMAIL ?? "admin@irisatalier.test";
+  return env.ADMIN_EMAIL ?? "admin@rivacicekantalya.test";
 }
 
 export async function notifyOrderCreated(order: Order) {

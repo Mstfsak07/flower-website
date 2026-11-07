@@ -21,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return locale === "en"
     ? {
-        title: "Shop | Iris Atalier",
+        title: "Shop | Riva Çiçekçilik",
         description: "Explore refined floral selections by category and product.",
       }
     : {
-        title: "Magaza | Iris Atalier",
+        title: "Magaza | Riva Çiçekçilik",
         description: "Canli, rafine ve mevsimsel cicek secimlerini kategorilere gore kesfet.",
       };
 }

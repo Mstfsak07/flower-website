@@ -45,7 +45,7 @@ export default async function ProductPage({
         data={{
           "@context": "https://schema.org",
           "@type": "Product",
-          brand: "Iris Atalier",
+          brand: "Riva Çiçekçilik",
           category: localizedCategory?.name,
           description: localizedProduct.shortDescription,
           image: product.images.map((image) => image.imageUrl),

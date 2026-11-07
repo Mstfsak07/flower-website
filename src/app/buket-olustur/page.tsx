@@ -21,11 +21,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return locale === "en"
     ? {
-        title: "AI Bouquet Brief | Iris Atalier",
+        title: "AI Bouquet Brief | Riva Çiçekçilik",
         description: "Describe your ideal bouquet and get an AI-guided floral direction with matching catalog products.",
       }
     : {
-        title: "AI Buket Tarifi | Iris Atalier",
+        title: "AI Buket Tarifi | Riva Çiçekçilik",
         description: "Hayalindeki buketi tarif et, AI destekli buket yonu ve uygun katalog onerileri al.",
       };
 }
@@ -45,7 +45,7 @@ export default async function BouquetBuilderPage() {
       >
         <main className="mx-auto max-w-7xl px-6 pb-20 pt-32 md:px-8">
           <div className="mb-10 max-w-3xl">
-            <div className="text-xs uppercase tracking-[0.28em] text-[#f3d98b]">Iris Atalier AI</div>
+            <div className="text-xs uppercase tracking-[0.28em] text-[#f3d98b]">Riva Çiçekçilik AI</div>
             <h1 className={`${serif.className} mt-4 text-5xl tracking-tight text-white md:text-7xl`}>
               {locale === "en" ? "Describe The Feeling, Not The SKU." : "SKU Degil, Hissi Tarif Et."}
             </h1>

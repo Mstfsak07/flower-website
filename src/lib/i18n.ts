@@ -67,7 +67,7 @@ const dictionaries = {
       craftTitleStart: "Siradanin",
       craftTitleAccent: "Otesinde",
       craftDescription:
-        "Iris Atalier'deki her tasarim; doku, ton ve koku arasinda dengeli bir kompozisyon olarak ele alinir.",
+        "Riva Çiçekçilik'teki her tasarim; doku, ton ve koku arasinda dengeli bir kompozisyon olarak ele alinir.",
       craftItems: [
         "Dayaniklilik icin ozenle hazirlanan saplar",
         "Imza koku karakteriyle tamamlanan sunum",
@@ -76,13 +76,13 @@ const dictionaries = {
       curatedEssentials: "Secilmis Vazgecilmezler",
       curatedEssentialsSubtitle: "Mekana sakin ama guclu bir karakter katan zamansiz secimler",
       atelierCollection: "Atolye Koleksiyonu",
-      scentTitle: "Iris Atalier'in Imza Kokusu",
+      scentTitle: "Riva Çiçekçilik'in Imza Kokusu",
       scentDescription:
         "Amber, toprak ve yasemin notalari; her aranjmana duyusal bir derinlik ekler.",
       footerLinks: ["Surdurulebilirlik", "Bakim Rehberi", "Basin", "Kosullar", "Iletisim"],
       footerInstagram: "Instagram",
       footerMail: "E-Posta",
-      footerCopy: "© 2026 Iris Atalier. Ozenle hazirlanan premium cicek tasarimlari.",
+      footerCopy: "© 2026 Riva Çiçekçilik. Ozenle hazirlanan premium cicek tasarimlari.",
     },
     category: {
       collections: "Aranjmanlar",
@@ -191,7 +191,7 @@ const dictionaries = {
       craftTitleStart: "Beyond the",
       craftTitleAccent: "Ordinary",
       craftDescription:
-        "Every design at Iris Atalier is approached as a balanced composition of texture, tone, and scent.",
+        "Every design at Riva Çiçekçilik is approached as a balanced composition of texture, tone, and scent.",
       craftItems: [
         "Carefully prepared stems for longer presence",
         "Presentation completed with a signature scent profile",
@@ -200,13 +200,13 @@ const dictionaries = {
       curatedEssentials: "Curated Essentials",
       curatedEssentialsSubtitle: "Timeless pieces that give interiors a quiet but confident character",
       atelierCollection: "Atelier Collection",
-      scentTitle: "The Signature Scent of Iris Atalier",
+      scentTitle: "The Signature Scent of Riva Çiçekçilik",
       scentDescription:
         "Amber, earth, and jasmine notes add a layered sensory depth to every arrangement.",
       footerLinks: ["Sustainability", "Care Guide", "Press", "Terms", "Contact"],
       footerInstagram: "Instagram",
       footerMail: "Email",
-      footerCopy: "© 2026 Iris Atalier. Refined floral compositions.",
+      footerCopy: "© 2026 Riva Çiçekçilik. Refined floral compositions.",
     },
     category: {
       collections: "Arrangements",

@@ -4,7 +4,7 @@
 
 - `DATABASE_URL` for PostgreSQL
 - `ADMIN_SECRET` for protecting `/api/admin/*`
-- `NEXT_PUBLIC_SITE_URL` as canonical public origin (e.g. `https://irisatalier.com`)
+- `NEXT_PUBLIC_SITE_URL` as canonical public origin (e.g. `https://rivacicekantalya.com`)
 - `NEXT_PUBLIC_PAYMENT_PROVIDER`
 - provider credentials for payment and mail
 

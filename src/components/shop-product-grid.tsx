@@ -458,7 +458,7 @@ export function ShopProductGrid({ locale, products, serifClassName }: ShopProduc
         style={{ scrollMarginTop: "7rem" }}
       >
         <div className="mb-10 text-center">
-          <h1 className="text-2xl tracking-[0.2em] text-[#aa2e28] md:text-3xl">IRIS ATALIER</h1>
+          <h1 className="text-2xl tracking-[0.2em] text-[#aa2e28] md:text-3xl">RIVA ÇİÇEKÇİLİK</h1>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#6d5b57] md:text-base">
             {t.intro}
           </p>

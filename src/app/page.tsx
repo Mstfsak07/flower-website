@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { getLocale } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Iris Atalier | Editorial Floral Design",
+  title: "Riva Çiçekçilik | Editorial Floral Design",
 };
 
 export default async function HomePage() {

@@ -35,7 +35,7 @@ const copy = {
     checkout: "Odeme Adimina Gec",
     securePayment: "Guvenli odeme",
     continueShopping: "Alisverise Devam Et",
-    footerCopy: "© 2024 Iris Atalier. Tum haklari saklidir.",
+    footerCopy: "© 2024 Riva Çiçekçilik. Tum haklari saklidir.",
   },
   en: {
     loadingLabel: "Loading Cart",
@@ -58,7 +58,7 @@ const copy = {
     checkout: "Proceed to Checkout",
     securePayment: "Secure payment",
     continueShopping: "Continue Shopping",
-    footerCopy: "© 2024 Iris Atalier. All rights reserved.",
+    footerCopy: "© 2024 Riva Çiçekçilik. All rights reserved.",
   },
 } as const;
 

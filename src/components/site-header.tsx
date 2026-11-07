@@ -89,7 +89,7 @@ export function SiteHeader({ currentLocale }: SiteHeaderProps) {
               </span>
               <span className="flex min-w-0 flex-col leading-none">
                 <span className={`${serif.className} truncate text-xl tracking-tight text-[#6b5ca5] sm:text-2xl`}>
-                  Iris Atalier
+                  Riva Çiçekçilik
                 </span>
                 <span className="mt-1 hidden text-[10px] font-semibold uppercase tracking-[0.26em] text-[#8c716d] sm:block">
                   Floral Atelier

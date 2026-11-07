@@ -1,6 +1,6 @@
 import { env } from "@/lib/env";
 
-const FALLBACK_SITE_URL = "https://irisatalier.com";
+const FALLBACK_SITE_URL = "https://rivacicekantalya.com";
 
 function trimTrailingSlash(value: string) {
   return value.endsWith("/") ? value.slice(0, -1) : value;

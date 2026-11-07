@@ -8,10 +8,10 @@ describe("auth server helpers", () => {
 
   it("accepts demo admin credentials", async () => {
     const { verifyAdminCredentials } = await import("./auth-server");
-    const user = verifyAdminCredentials("admin@irisatalier.test", "Admin123!");
+    const user = verifyAdminCredentials("admin@rivacicekantalya.test", "Admin123!");
 
     expect(user).toMatchObject({
-      email: "admin@irisatalier.test",
+      email: "admin@rivacicekantalya.test",
       role: "ADMIN",
     });
   });
@@ -20,10 +20,10 @@ describe("auth server helpers", () => {
     vi.stubEnv("DATABASE_URL", "postgresql://demo:demo@db.example.com:5432/cicekci");
 
     const { verifyAdminCredentials } = await import("./auth-server");
-    const user = verifyAdminCredentials("admin@irisatalier.test", "Admin123!");
+    const user = verifyAdminCredentials("admin@rivacicekantalya.test", "Admin123!");
 
     expect(user).toMatchObject({
-      email: "admin@irisatalier.test",
+      email: "admin@rivacicekantalya.test",
       role: "ADMIN",
     });
   });
@@ -33,7 +33,7 @@ describe("auth server helpers", () => {
     vi.stubEnv("DATABASE_URL", "postgresql://demo:demo@db.example.com:5432/cicekci");
 
     const { verifyAdminCredentials } = await import("./auth-server");
-    const user = verifyAdminCredentials("admin@irisatalier.test", "Admin123!");
+    const user = verifyAdminCredentials("admin@rivacicekantalya.test", "Admin123!");
 
     expect(user).toBeNull();
   });
@@ -44,7 +44,7 @@ describe("auth server helpers", () => {
     const { createAuthSession, readAuthSessionFromRequest, verifyDemoAdminCredentials } = await import(
       "./auth-server"
     );
-    const adminUser = verifyDemoAdminCredentials("admin@irisatalier.test", "Admin123!");
+    const adminUser = verifyDemoAdminCredentials("admin@rivacicekantalya.test", "Admin123!");
     expect(adminUser).not.toBeNull();
     const token = Buffer.from(JSON.stringify(createAuthSession(adminUser!))).toString("base64url");
 
@@ -152,8 +152,8 @@ describe("auth server helpers", () => {
     const { refreshSessionUser } = await import("./auth-server");
     const sessionUser = {
       id: "demo-admin",
-      email: "admin@irisatalier.test",
-      name: "Iris Atalier Admin",
+      email: "admin@rivacicekantalya.test",
+      name: "Riva Çiçekçilik Admin",
       role: "ADMIN" as const,
     };
 

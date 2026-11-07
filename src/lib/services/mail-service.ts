@@ -11,7 +11,7 @@
  *   ADMIN_EMAIL                        (recipient for admin notifications)
  *   SMTP_HOST / SMTP_PORT / SMTP_USER / SMTP_PASS
  *   RESEND_API_KEY
- *   MAIL_FROM                          (sender address, e.g. "Iris Atalier <no-reply@irisatalier.com>")
+ *   MAIL_FROM                          (sender address, e.g. "Riva Çiçekçilik <no-reply@rivacicekantalya.com>")
  */
 
 export type MailPayload = {

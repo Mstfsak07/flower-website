@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("admin settings exposes visual config", async ({ page }) => {
   const loginResponse = await page.request.post("/api/auth/login", {
     data: {
-      email: "admin@irisatalier.test",
+      email: "admin@rivacicekantalya.test",
       password: "Admin123!",
       redirectTo: "/admin/ayarlar",
     },

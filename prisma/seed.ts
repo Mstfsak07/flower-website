@@ -10,11 +10,11 @@ async function main() {
   // When DATABASE_URL is configured, login prefers this persisted admin over demo credentials.
   const adminPasswordHash = process.env.ADMIN_SEED_PASSWORD_HASH ?? null;
   await prisma.user.upsert({
-    where: { email: "admin@irisatalier.test" },
+    where: { email: "admin@rivacicekantalya.test" },
     update: { passwordHash: adminPasswordHash },
     create: {
       name: "Admin User",
-      email: "admin@irisatalier.test",
+      email: "admin@rivacicekantalya.test",
       phone: "05320000000",
       role: UserRole.ADMIN,
       passwordHash: adminPasswordHash,

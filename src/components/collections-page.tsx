@@ -55,8 +55,8 @@ export function CollectionsPage({ locale }: { locale: Locale }) {
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-[#6d5b57]">
             {locale === "tr"
-              ? "Iris Atalier aranjmanlarini ister hazir koleksiyonlardan sec, ister kendi buketini kur, istersen de tarifinle ozel yonlendirme al."
-              : "Browse Iris Atalier arrangements through ready collections, custom bouquet building, or guided AI recommendations."}
+              ? "Riva Çiçekçilik aranjmanlarini ister hazir koleksiyonlardan sec, ister kendi buketini kur, istersen de tarifinle ozel yonlendirme al."
+              : "Browse Riva Çiçekçilik arrangements through ready collections, custom bouquet building, or guided AI recommendations."}
           </p>
         </section>
 
