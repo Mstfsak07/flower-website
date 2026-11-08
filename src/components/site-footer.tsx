@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { AtSign, MapPin, MessageCircleMore, Sparkles } from "lucide-react";
-import { Noto_Serif } from "next/font/google";
 
 import { categories, getLocalizedCategory, siteSettings } from "@/lib/data";
+import { notoSerif as serif } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
 import { getBrandName, getSiteConfigValue, localizedLegalLinks } from "@/lib/site-config";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 const copy = {
   tr: {

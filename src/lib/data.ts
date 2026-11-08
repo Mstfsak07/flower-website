@@ -11,6 +11,8 @@ import type {
   WholesaleInquiry,
 } from "@/lib/types";
 import type { Locale } from "@/lib/locale";
+import { buildCategories, categoryTranslationsEn, productOccasions } from "@/lib/category-taxonomy";
+import { antalyaDeliveryZoneIds, antalyaDeliveryZones } from "@/lib/delivery-regions";
 
 export const siteSettings: SiteSettings = {
   storeName: "Riva Çiçekçilik",
@@ -35,7 +37,7 @@ export const heroSlides: HeroSlide[] = [
     imageUrl:
       "https://images.unsplash.com/photo-1526397751294-331021109fbd?auto=format&fit=crop&w=1200&q=80",
     ctaText: "Alisverise Basla",
-    ctaUrl: "/kategori/mini-buketler",
+    ctaUrl: "/kategori/buketler",
     isActive: true,
     sortOrder: 1,
   },
@@ -98,95 +100,13 @@ export const visualExperienceConfigs: VisualExperienceConfig[] = [
   },
 ];
 
-export const categories: Category[] = [
-  {
-    id: "cat-1",
-    name: "Tekli Guller",
-    slug: "tekli-guller",
-    description: "Minimal, temiz ve ekonomik gonderimler icin tekli gul secenekleri.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1518709268805-4e9042af2176?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 1,
-  },
-  {
-    id: "cat-2",
-    name: "Mini Buketler",
-    slug: "mini-buketler",
-    description: "Gunluk gonderimler ve hizli surprizler icin uygun fiyatli mini buketler.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 2,
-  },
-  {
-    id: "cat-3",
-    name: "Orta Boy Buketler",
-    slug: "orta-boy-buketler",
-    description: "Dogum gunu ve kutlamalar icin dengeli hacimde buket tasarimlari.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 3,
-  },
-  {
-    id: "cat-4",
-    name: "Premium Buketler",
-    slug: "premium-buketler",
-    description: "Daha zengin tasarim, daha gosterisli sunum ve ozel gun odakli secimler.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1520763185298-1b434c919102?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 4,
-  },
-  {
-    id: "cat-5",
-    name: "Saksi Cicekleri",
-    slug: "saksi-cicekleri",
-    description: "Uzun omurlu hediye arayanlar icin bakimi kolay saksili turler.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1487537023671-8dce1a785863?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 5,
-  },
-  {
-    id: "cat-6",
-    name: "Toptan Etkinlik Cicekleri",
-    slug: "toptan-etkinlik-cicekleri",
-    description: "Mekan suslemesi, etkinlik ve kurumsal alimlar icin toplu cicek setleri.",
-    imageUrl:
-      "https://images.unsplash.com/photo-1455656678494-4d1b5f3e7ad1?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-    sortOrder: 6,
-  },
-];
+export const categories: Category[] = buildCategories();
 
-const categoryTranslations: Partial<Record<Category["slug"], { name: string; description: string }>> = {
-  "tekli-guller": {
-    name: "Single Roses",
-    description: "Single rose options for minimal, clean, and affordable gifting.",
-  },
-  "mini-buketler": {
-    name: "Mini Bouquets",
-    description: "Affordable mini bouquets for everyday deliveries and quick surprises.",
-  },
-  "orta-boy-buketler": {
-    name: "Medium Bouquets",
-    description: "Balanced bouquet designs for birthdays and celebrations.",
-  },
-  "premium-buketler": {
-    name: "Premium Bouquets",
-    description: "Richer designs and elevated presentations for meaningful occasions.",
-  },
-  "saksi-cicekleri": {
-    name: "Potted Plants",
-    description: "Easy-care potted gifts for those who want something longer lasting.",
-  },
-  "toptan-etkinlik-cicekleri": {
-    name: "Wholesale Event Flowers",
-    description: "Bulk floral sets for venues, events, and corporate purchases.",
-  },
-};
+const categoryTranslations: Partial<Record<Category["slug"], { name: string; description: string }>> =
+  categoryTranslationsEn;
+
+const enDefaultDescription =
+  "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.";
 
 const productTranslations: Partial<Record<Product["slug"], Pick<Product, "name" | "shortDescription" | "description">>> = {
   "gul-buketi": {
@@ -238,6 +158,96 @@ const productTranslations: Partial<Record<Product["slug"], Pick<Product, "name" 
     name: "Violet Bouquet",
     shortDescription: "A nostalgic bouquet arranged with delicate violets.",
     description: "Prepared with fresh daily flowers, same-day production options, and delivery-zone validation. Supports card notes, delivery slot selection, and variant choices.",
+  },
+  "kutuda-pembe-guller": {
+    name: "Pink Roses in a Box",
+    shortDescription: "Pink roses presented in an elegant box, a graceful surprise for loved ones.",
+    description: enDefaultDescription,
+  },
+  "sepette-renkli-papatyalar": {
+    name: "Colorful Daisies in a Basket",
+    shortDescription: "A cheerful, colorful daisy arrangement in a woven basket.",
+    description: enDefaultDescription,
+  },
+  "vazoda-karisik-mevsim-cicekleri": {
+    name: "Mixed Seasonal Flowers in a Vase",
+    shortDescription: "An arrangement of the season's freshest flowers in a glass vase.",
+    description: enDefaultDescription,
+  },
+  "solmayan-kirmizi-gul-kutusu": {
+    name: "Preserved Red Rose Box",
+    shortDescription: "Specially preserved red roses that stay beautiful for years.",
+    description: enDefaultDescription,
+  },
+  "solmayan-pembe-gul-kutusu": {
+    name: "Preserved Pink Rose Box",
+    shortDescription: "Pink roses in an elegant box that never wilt.",
+    description: enDefaultDescription,
+  },
+  "saksida-sardunya": {
+    name: "Potted Geranium",
+    shortDescription: "An easy-care potted geranium with vivid color.",
+    description: enDefaultDescription,
+  },
+  "saksida-kalanso": {
+    name: "Potted Kalanchoe",
+    shortDescription: "A long-lasting, compact and colorful kalanchoe.",
+    description: enDefaultDescription,
+  },
+  "iki-dal-mor-orkide": {
+    name: "Two-Stem Purple Orchid",
+    shortDescription: "A long-lasting purple orchid with two stems in a ceramic pot.",
+    description: enDefaultDescription,
+  },
+  "tek-dal-beyaz-orkide": {
+    name: "Single-Stem White Orchid",
+    shortDescription: "A simple and refined single-stem white orchid.",
+    description: enDefaultDescription,
+  },
+  "kelebekli-pembe-gul-buketi": {
+    name: "Butterfly Pink Rose Bouquet",
+    shortDescription: "A distinctive pink rose bouquet with butterfly details.",
+    description: enDefaultDescription,
+  },
+  "mini-teraryum": {
+    name: "Mini Terrarium",
+    shortDescription: "A miniature garden in glass, an easy-care lasting gift.",
+    description: enDefaultDescription,
+  },
+  "ayicikli-buket": {
+    name: "Teddy Bear Bouquet",
+    shortDescription: "A cute surprise gift bouquet with a teddy bear.",
+    description: enDefaultDescription,
+  },
+  "pembe-ayicikli-buket": {
+    name: "Pink Teddy Bear Bouquet",
+    shortDescription: "A sweet bouquet of pink roses with a little teddy bear.",
+    description: enDefaultDescription,
+  },
+  "acilis-celengi": {
+    name: "Opening Wreath",
+    shortDescription: "A striking standing wreath for newly opened businesses.",
+    description: enDefaultDescription,
+  },
+  "dugun-nikah-celengi": {
+    name: "Wedding & Engagement Wreath",
+    shortDescription: "A carefully prepared wreath for weddings and engagement ceremonies.",
+    description: enDefaultDescription,
+  },
+  "cenaze-celengi": {
+    name: "Funeral Wreath",
+    shortDescription: "A simple wreath in white tones for funerals and memorials.",
+    description: enDefaultDescription,
+  },
+  "11-kirmizi-gul-buketi": {
+    name: "11 Red Roses Bouquet",
+    shortDescription: "A classic, romantic bouquet made of 11 red roses.",
+    description: enDefaultDescription,
+  },
+  "25-kirmizi-gul-buketi": {
+    name: "25 Red Roses Bouquet",
+    shortDescription: "A showstopping special-occasion bouquet of 25 red roses.",
+    description: enDefaultDescription,
   },
 };
 
@@ -417,7 +427,7 @@ function product(
         isRequired: false,
       },
     ],
-    deliveryZoneIds: ["zone-1", "zone-2", "zone-3"],
+    deliveryZoneIds: ["zone-1", "zone-2", "zone-3", ...antalyaDeliveryZoneIds],
     badges,
   };
 }
@@ -427,7 +437,7 @@ export const products: Product[] = [
     "p1",
     "Gül Buketi",
     "gul-buketi",
-    "cat-2",
+    "cat-gul-buketleri",
     450,
     undefined,
     "/products/rose-classic.jpg",
@@ -438,7 +448,7 @@ export const products: Product[] = [
     "p10",
     "Pembe Gül Buketi",
     "pembe-gul-buketi",
-    "cat-2",
+    "cat-gul-buketleri",
     480,
     undefined,
     "/products/rose-pastel.jpg",
@@ -449,7 +459,7 @@ export const products: Product[] = [
     "p2",
     "Karanfil Buketi",
     "karanfil-buketi",
-    "cat-2",
+    "cat-buketler",
     250,
     undefined,
     "/products/mixed-delicate.jpg",
@@ -460,7 +470,7 @@ export const products: Product[] = [
     "p3",
     "Papatya Buketi",
     "papatya-buketi",
-    "cat-2",
+    "cat-buketler",
     300,
     undefined,
     "/products/white-daisies.jpg",
@@ -471,7 +481,7 @@ export const products: Product[] = [
     "p4",
     "Sardunya Buketi",
     "sardunya-buketi",
-    "cat-2",
+    "cat-buketler",
     350,
     undefined,
     "/products/rose-soft.jpg",
@@ -482,7 +492,7 @@ export const products: Product[] = [
     "p5",
     "Begonya Buketi",
     "begonya-buketi",
-    "cat-2",
+    "cat-buketler",
     380,
     undefined,
     "/products/mixed-delicate.jpg",
@@ -493,7 +503,7 @@ export const products: Product[] = [
     "p6",
     "Lavanta Buketi",
     "lavanta-buketi",
-    "cat-2",
+    "cat-buketler",
     420,
     undefined,
     "/products/lavender-bouquet.jpg",
@@ -504,7 +514,7 @@ export const products: Product[] = [
     "p7",
     "Petunya Buketi",
     "petunya-buketi",
-    "cat-2",
+    "cat-buketler",
     340,
     undefined,
     "/products/violet-cluster.jpg",
@@ -515,7 +525,7 @@ export const products: Product[] = [
     "p8",
     "Kalanşo Buketi",
     "kalanso-buketi",
-    "cat-2",
+    "cat-buketler",
     280,
     undefined,
     "/products/rose-soft.jpg",
@@ -526,12 +536,215 @@ export const products: Product[] = [
     "p9",
     "Menekşe Buketi",
     "menekse-buketi",
-    "cat-2",
+    "cat-buketler",
     360,
     undefined,
     "/products/violet-cluster.jpg",
     "Tatlı ve narin menekşelerden hazırlanmış nostaljik buket.",
     ["Klasik"],
+  ),
+  // ---------------------------------------------------------------------------
+  // Kategori vitrini icin ornek urunler (kutahyadacicekci.com kategori yapisina gore).
+  // Gorseller ve fiyatlar YER TUTUCUDUR: gercek foto/fiyatlar hazir olunca burada
+  // (veya admin panelinden) guncellenir. compareAtPrice dolu olanlar kartta "%X indirim" gosterir.
+  // ---------------------------------------------------------------------------
+  product(
+    "p21",
+    "Kutuda Pembe Güller",
+    "kutuda-pembe-guller",
+    "cat-aranjmanlar",
+    690,
+    750,
+    "/pembe-gul.jpg",
+    "Şık kutuda sunulan pembe güller; sevgiliye ve özel günlere zarif bir sürpriz.",
+    ["Zarif", "Mevsimsel"],
+  ),
+  product(
+    "p22",
+    "Sepette Renkli Papatyalar",
+    "sepette-renkli-papatyalar",
+    "cat-aranjmanlar",
+    520,
+    560,
+    "/papatya.jpg",
+    "Hasır sepette neşeli ve renkli papatya aranjmanı.",
+    ["Gunluk"],
+  ),
+  product(
+    "p23",
+    "Vazoda Karışık Mevsim Çiçekleri",
+    "vazoda-karisik-mevsim-cicekleri",
+    "cat-aranjmanlar",
+    580,
+    undefined,
+    "/products/mixed-delicate.jpg",
+    "Cam vazoda mevsimin en taze çiçeklerinden hazırlanan aranjman.",
+    ["Mevsimsel"],
+  ),
+  product(
+    "p24",
+    "Solmayan Kırmızı Gül Kutusu",
+    "solmayan-kirmizi-gul-kutusu",
+    "cat-solmayan-guller",
+    950,
+    1050,
+    "/products/rose-classic.jpg",
+    "Yıllarca canlı kalan, özel işlem görmüş kırmızı güller.",
+    ["Uzun Omurlu", "Cok Satan"],
+  ),
+  product(
+    "p25",
+    "Solmayan Pembe Gül Kutusu",
+    "solmayan-pembe-gul-kutusu",
+    "cat-solmayan-guller",
+    890,
+    undefined,
+    "/products/rose-pastel.jpg",
+    "Zarif kutuda, yıllarca solmayan pembe güller.",
+    ["Uzun Omurlu", "Zarif"],
+  ),
+  product(
+    "p26",
+    "Saksıda Sardunya",
+    "saksida-sardunya",
+    "cat-saksi-cicekleri",
+    220,
+    250,
+    "/sardunya.jpg",
+    "Bakımı kolay, canlı renkli saksılı sardunya.",
+    ["Uzun Omurlu"],
+  ),
+  product(
+    "p27",
+    "Saksıda Kalanşo",
+    "saksida-kalanso",
+    "cat-saksi-cicekleri",
+    200,
+    undefined,
+    "/kalanso.jpg",
+    "Uzun ömürlü, kompakt ve rengarenk kalanşo.",
+    ["Uzun Omurlu"],
+  ),
+  product(
+    "p28",
+    "İki Dal Mor Orkide",
+    "iki-dal-mor-orkide",
+    "cat-orkideler",
+    950,
+    1020,
+    "/products/violet-cluster.jpg",
+    "Seramik saksıda iki dallı, uzun ömürlü mor orkide.",
+    ["Zarif", "Uzun Omurlu"],
+  ),
+  product(
+    "p29",
+    "Tek Dal Beyaz Orkide",
+    "tek-dal-beyaz-orkide",
+    "cat-orkideler",
+    650,
+    undefined,
+    "/products/white-daisies.jpg",
+    "Sade ve asil görünümlü tek dallı beyaz orkide.",
+    ["Zarif"],
+  ),
+  product(
+    "p30",
+    "Kelebekli Pembe Gül Buketi",
+    "kelebekli-pembe-gul-buketi",
+    "cat-kelebek-buketleri",
+    780,
+    850,
+    "/products/rose-soft.jpg",
+    "Kelebek detaylarıyla farklı ve dikkat çekici pembe gül buketi.",
+    ["Zarif"],
+  ),
+  product(
+    "p31",
+    "Mini Teraryum",
+    "mini-teraryum",
+    "cat-terrariumlar",
+    340,
+    undefined,
+    "/begonya.jpg",
+    "Cam içinde minyatür bahçe; bakımı kolay, kalıcı bir hediye.",
+    ["Uzun Omurlu"],
+  ),
+  product(
+    "p32",
+    "Ayıcıklı Buket",
+    "ayicikli-buket",
+    "cat-ayicik-buketleri",
+    890,
+    960,
+    "/products/rose-classic.jpg",
+    "Sevimli ayıcıklı, sürpriz hediye buketi.",
+    ["Cok Satan"],
+  ),
+  product(
+    "p33",
+    "Pembe Ayıcıklı Buket",
+    "pembe-ayicikli-buket",
+    "cat-ayicik-buketleri",
+    840,
+    undefined,
+    "/pembe-gul.jpg",
+    "Pembe güller ve minik ayıcıkla hazırlanan tatlı buket.",
+    ["Zarif"],
+  ),
+  product(
+    "p34",
+    "Açılış Çelengi",
+    "acilis-celengi",
+    "cat-dugun-acilis-celenkleri",
+    1500,
+    1600,
+    "/products/mixed-delicate.jpg",
+    "Yeni açılan iş yerleri için gösterişli ayaklı çelenk.",
+    ["Klasik"],
+  ),
+  product(
+    "p35",
+    "Düğün & Nikah Çelengi",
+    "dugun-nikah-celengi",
+    "cat-dugun-acilis-celenkleri",
+    1700,
+    undefined,
+    "/products/rose-pastel.jpg",
+    "Düğün ve nikah törenleri için özenle hazırlanmış çelenk.",
+    ["Zarif"],
+  ),
+  product(
+    "p36",
+    "Cenaze Çelengi",
+    "cenaze-celengi",
+    "cat-cenaze-celenkleri",
+    1400,
+    undefined,
+    "/products/white-daisies.jpg",
+    "Cenaze ve anma törenleri için beyaz tonlarda sade çelenk.",
+    ["Klasik"],
+  ),
+  product(
+    "p37",
+    "11 Kırmızı Gül Buketi",
+    "11-kirmizi-gul-buketi",
+    "cat-gul-buketleri",
+    790,
+    860,
+    "/products/rose-classic.jpg",
+    "11 adet kırmızı gülden hazırlanan klasik ve romantik buket.",
+    ["Cok Satan", "Klasik"],
+  ),
+  product(
+    "p38",
+    "25 Kırmızı Gül Buketi",
+    "25-kirmizi-gul-buketi",
+    "cat-gul-buketleri",
+    1650,
+    1750,
+    "/products/rose-classic.jpg",
+    "25 adet kırmızı gülden gösterişli, özel gün buketi.",
+    ["Zarif"],
   ),
 ];
 
@@ -571,6 +784,8 @@ export const deliveryZones: DeliveryZone[] = [
     cutoffHour: 12,
     isActive: true,
   },
+  // Antalya bolgeleri: ucretler src/lib/delivery-regions.ts icinde duzenlenir.
+  ...antalyaDeliveryZones,
 ];
 
 export const coupons: Coupon[] = [
@@ -847,7 +1062,17 @@ export function getProductsByCategory(slug: string) {
     return [];
   }
 
+  if (category.group === "occasion") {
+    return products.filter((product) => (productOccasions[product.slug] ?? []).includes(category.slug));
+  }
+
   return products.filter((product) => product.categoryId === category.id);
+}
+
+export function getCategoriesByGroup(group: Category["group"]) {
+  return categories
+    .filter((category) => category.isActive && category.group === group)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export function getProductById(id: string) {

@@ -1,26 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Manrope, Noto_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/components/json-ld";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductPurchasePanel } from "@/components/product-purchase-panel";
 import { getCategoryById, getLocalizedCategory, getLocalizedProduct, getProductBySlug, getSimilarProducts } from "@/lib/data";
+import { manrope as sans, notoSerif as serif } from "@/lib/fonts";
 import { getDictionary, getLocale } from "@/lib/i18n";
 import { toAbsoluteUrl } from "@/lib/site-url";
 import { formatPrice } from "@/lib/utils";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-});
-
-const sans = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
 
 export default async function ProductPage({
   params,

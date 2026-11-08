@@ -3,25 +3,15 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
-import { Manrope, Noto_Serif } from "next/font/google";
 import { Menu, X } from "lucide-react";
 
 import { AuthNavAction } from "@/components/auth-nav-action";
 import { CartNavLink } from "@/components/cart-nav-link";
 import { HomeLink } from "@/components/home-link";
 import { IrisMark } from "@/components/iris-mark";
+import { manrope as sans, notoSerif as serif } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const sans = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 type SiteHeaderProps = {
   currentLocale: Locale;

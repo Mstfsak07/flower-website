@@ -21,7 +21,10 @@ async function main() {
     },
   });
 
-  for (const category of categories) {
+  for (const fullCategory of categories) {
+    // group yalnizca vitrinde kullanilir, veritabaninda kolonu yok
+    const { group, ...category } = fullCategory;
+    void group;
     await prisma.category.upsert({
       where: { slug: category.slug },
       update: category,

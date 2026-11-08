@@ -226,7 +226,7 @@ export function CheckoutPageView() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               className="inline-flex rounded-full bg-[var(--color-ink)] px-5 py-3 text-sm font-semibold text-white"
-              href="/kategori/mini-buketler"
+              href="/kategori/buketler"
             >
               Koleksiyona Don
             </Link>

@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   );
 
   const routes = uniqueRoutes.map((route) => ({
-    url: toAbsoluteUrl(route.replace("[slug]", "mini-buketler")),
+    url: toAbsoluteUrl(route.replace("[slug]", "buketler")),
     lastModified: new Date(),
   }));
 

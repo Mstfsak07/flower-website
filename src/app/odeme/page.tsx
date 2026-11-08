@@ -1,20 +1,9 @@
-import { Manrope, Noto_Serif } from "next/font/google";
 import Link from "next/link";
 
 import { PaymentCheckoutView } from "@/components/payment-checkout-view";
+import { manrope as sans, notoSerif as serif } from "@/lib/fonts";
 import { getLocale } from "@/lib/i18n";
 import { getBrandName } from "@/lib/site-config";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-});
-
-const sans = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-});
 
 export default async function CheckoutPage() {
   const locale = await getLocale();

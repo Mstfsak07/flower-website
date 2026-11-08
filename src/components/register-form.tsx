@@ -3,16 +3,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Noto_Serif } from "next/font/google";
 import { Loader2 } from "lucide-react";
 
 import { useAuth } from "@/components/providers/auth-provider";
+import { notoSerif } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
-
-const notoSerif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
 
 const copy = {
   tr: {

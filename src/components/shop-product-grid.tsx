@@ -349,6 +349,14 @@ function matchesFilter(product: Product, key: FilterKey, value: string) {
   return profile.specials.includes(value);
 }
 
+function getDiscountPercent(product: Product) {
+  if (!product.compareAtPrice || product.compareAtPrice <= product.basePrice) {
+    return 0;
+  }
+
+  return Math.round((1 - product.basePrice / product.compareAtPrice) * 100);
+}
+
 export function ShopProductGrid({ locale, products, serifClassName }: ShopProductGridProps) {
   const router = useRouter();
   const { addToCart } = useStore();
@@ -573,13 +581,23 @@ export function ShopProductGrid({ locale, products, serifClassName }: ShopProduc
               <Link className="block" href={`/urun/${product.slug}`} prefetch={false}>
                 <div className="relative h-72 w-full">
                   <Image alt={product.name} className="object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" src={product.images[0]?.imageUrl} unoptimized />
+                  {getDiscountPercent(product) > 0 ? (
+                    <span className="absolute left-3 top-3 rounded-full bg-[#aa2e28] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-white shadow-md">
+                      {locale === "en" ? `${getDiscountPercent(product)}% off` : `%${getDiscountPercent(product)} indirim`}
+                    </span>
+                  ) : null}
                 </div>
               </Link>
               <div className="flex flex-grow flex-col border-t border-[#ead8d2]/80 bg-[#fffdfb]/96 p-5 text-center">
                 <Link className="mb-2 block" href={`/urun/${product.slug}`} prefetch={false}>
                   <h2 className={`${serifClassName} text-2xl text-[#2f2623] transition-colors hover:text-[#aa2e28]`}>{product.name}</h2>
                 </Link>
-                <p className="text-lg font-light text-[#6d5b57]">{formatPrice(product.basePrice)}</p>
+                <p className="flex items-baseline justify-center gap-2 text-lg font-light text-[#6d5b57]">
+                  {getDiscountPercent(product) > 0 ? (
+                    <span className="text-sm text-[#a08b86] line-through">{formatPrice(product.compareAtPrice ?? 0)}</span>
+                  ) : null}
+                  <span className={getDiscountPercent(product) > 0 ? "font-semibold text-[#aa2e28]" : ""}>{formatPrice(product.basePrice)}</span>
+                </p>
                 <div className="mt-6 grid gap-3">
                   <Link
                     className="inline-flex items-center justify-center gap-2 rounded-full border border-[#ead8d2] bg-white/80 px-4 py-3 text-sm font-semibold uppercase tracking-[0.14em] text-[#6b5ca5] transition hover:bg-[#f8f0ff] hover:text-[#533f91]"

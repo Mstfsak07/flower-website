@@ -1,20 +1,10 @@
-import { Manrope, Noto_Serif } from "next/font/google";
 import type { Metadata } from "next";
 import { Search } from "lucide-react";
 
 import { ShopProductGrid } from "@/components/shop-product-grid";
+import { manrope as sans, notoSerif as serif } from "@/lib/fonts";
 import { getLocale } from "@/lib/i18n";
 import { listProducts } from "@/lib/services/catalog-service";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const sans = Manrope({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale();
