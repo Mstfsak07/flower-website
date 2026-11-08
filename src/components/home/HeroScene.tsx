@@ -63,6 +63,7 @@ export function HeroScene({
   const reduceMotion = useReducedMotion();
   const [tiltEnabled, setTiltEnabled] = useState(false);
   const stripRef = useRef<HTMLUListElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // Fare konumu: -1 ile 1 arasi. Yay ile yumusatilir.
   const mx = useMotionValue(0);
@@ -98,20 +99,33 @@ export function HeroScene({
   const rightRotX = useTransform(sy, (v) => v * -4);
   const rightX = useTransform(sx, (v) => v * -16);
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLElement>) => {
+  // Dinleyici pencerede: fare ustteki sabit menunun uzerine gelse de takip surer.
+  useEffect(() => {
     if (!tiltEnabled) {
       return;
     }
-    const rect = event.currentTarget.getBoundingClientRect();
-    mx.set(((event.clientX - rect.left) / rect.width - 0.5) * 2);
-    my.set(((event.clientY - rect.top) / rect.height - 0.5) * 2);
-  };
-
-  const handlePointerLeave = () => {
-    mx.set(0);
-    my.set(0);
-  };
-
+    const clamp = (value: number) => Math.max(-1, Math.min(1, value));
+    const onMove = (event: PointerEvent) => {
+      const rect = sectionRef.current?.getBoundingClientRect();
+      if (!rect || rect.bottom < 0 || rect.top > window.innerHeight) {
+        return;
+      }
+      mx.set(clamp(((event.clientX - rect.left) / rect.width - 0.5) * 2));
+      my.set(clamp(((event.clientY - rect.top) / rect.height - 0.5) * 2));
+    };
+    const onLeave = () => {
+      mx.set(0);
+      my.set(0);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.documentElement.addEventListener("pointerleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
+      mx.set(0);
+      my.set(0);
+    };
+  }, [tiltEnabled, mx, my]);
   const scrollStrip = (direction: 1 | -1) => {
     stripRef.current?.scrollBy({ left: direction * 280, behavior: "smooth" });
   };
@@ -123,8 +137,7 @@ export function HeroScene({
   return (
     <section
       className="relative isolate min-h-[100svh] overflow-hidden bg-[#2a1646] text-white"
-      onPointerLeave={handlePointerLeave}
-      onPointerMove={handlePointerMove}
+      ref={sectionRef}
     >
       {/* Sahne: arka plan ve gul ayni kutuda, boylece hizalari her ekranda korunur */}
       <div className="absolute inset-0 -z-30 [container-type:size]">
