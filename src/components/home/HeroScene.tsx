@@ -407,10 +407,7 @@ export function HeroScene({
               >
                 <Link className="hero-slab hero-slab--b group block" href={featured.href}>
                   <SlabLayers sheenX={sheenX} />
-                  <div
-                    className="hero-slab-content hero-3d p-5"
-                    style={desktop ? { transform: "translateZ(36px)" } : undefined}
-                  >
+                  <div className="hero-slab-content hero-3d p-5">
                     <div
                       className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] bg-white/10 shadow-[0_26px_40px_-14px_rgba(20,6,40,0.7)]"
                     >
