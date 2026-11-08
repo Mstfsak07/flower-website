@@ -4,7 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, Mouse } from "lucide-react";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 
 import { Reveal } from "@/components/motion/reveal";
 
@@ -48,6 +55,17 @@ const serifFont = { fontFamily: "var(--font-display), 'Noto Serif', serif" } as 
 
 const roseMask = "linear-gradient(to bottom, #000 70%, transparent 84%)";
 
+function SlabLayers({ sheenX }: { sheenX: MotionValue<number> }) {
+  return (
+    <>
+      <span aria-hidden className="hero-slab-back" />
+      <span aria-hidden className="hero-slab-glass">
+        <motion.span className="hero-slab-sheen" style={{ x: sheenX }} />
+      </span>
+    </>
+  );
+}
+
 export function HeroScene({
   eyebrow,
   brand,
@@ -61,7 +79,9 @@ export function HeroScene({
   categoriesLabel,
 }: HeroSceneProps) {
   const reduceMotion = useReducedMotion();
-  const [tiltEnabled, setTiltEnabled] = useState(false);
+  const [desktop, setDesktop] = useState(false);
+  // desktop: statik 3D egim ve derinlik. tiltEnabled: ek olarak fareyi takip eden hareket.
+  const tiltEnabled = desktop && !reduceMotion;
   const stripRef = useRef<HTMLUListElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -73,11 +93,11 @@ export function HeroScene({
 
   useEffect(() => {
     const query = window.matchMedia("(min-width: 1024px) and (pointer: fine)");
-    const update = () => setTiltEnabled(query.matches && !reduceMotion);
+    const update = () => setDesktop(query.matches);
     update();
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
-  }, [reduceMotion]);
+  }, []);
 
   // Katmanlar: uzak olan az, yakin olan cok hareket eder.
   const bgX = useTransform(sx, (v) => v * -14);
@@ -92,12 +112,15 @@ export function HeroScene({
   const fgFastY = useTransform(sy, (v) => v * -40);
 
   // Cam paneller: taban egimi + fareye tepki.
-  const leftRotY = useTransform(sx, (v) => 8 + v * 5);
-  const leftRotX = useTransform(sy, (v) => v * -4);
+  const leftRotY = useTransform(sx, (v) => 14 + v * 6);
+  const leftRotX = useTransform(sy, (v) => v * -5);
   const leftX = useTransform(sx, (v) => v * -10);
-  const rightRotY = useTransform(sx, (v) => -10 + v * 5);
-  const rightRotX = useTransform(sy, (v) => v * -4);
+  const rightRotY = useTransform(sx, (v) => -16 + v * 6);
+  const rightRotX = useTransform(sy, (v) => v * -5);
   const rightX = useTransform(sx, (v) => v * -16);
+  const stripRotX = useTransform(sy, (v) => 9 + v * -3);
+  const stripRotY = useTransform(sx, (v) => v * 4);
+  const sheenX = useTransform(sx, (v) => v * -110);
 
   // Dinleyici pencerede: fare ustteki sabit menunun uzerine gelse de takip surer.
   useEffect(() => {
@@ -292,50 +315,59 @@ export function HeroScene({
         <div className="grid flex-1 items-center gap-8 py-6 lg:grid-cols-[minmax(0,32rem)_minmax(0,1fr)_minmax(0,19rem)]">
           <Reveal y={22}>
             <motion.div
-              className="hero-glass rounded-[2.5rem] p-7 sm:p-10"
+              className="hero-slab hero-slab--a"
               style={
-                tiltEnabled
+                desktop
                   ? {
-                      transformPerspective: 1400,
+                      transformPerspective: 1100,
                       rotateY: leftRotY,
                       rotateX: leftRotX,
-                      rotateZ: -2,
+                      rotateZ: -3,
                       x: leftX,
                     }
                   : undefined
               }
             >
-              <div className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.26em] text-[#ffc2cd]">
-                <span className="size-2 rounded-full bg-[#ff5d7a] shadow-[0_0_14px_#ff5d7a]" />
-                {eyebrow}
-              </div>
-              <h1
-                className="mt-5 text-5xl leading-[1.02] tracking-[-0.02em] text-white sm:text-6xl"
-                style={serifFont}
+              <SlabLayers sheenX={sheenX} />
+              <div
+                className="hero-slab-content hero-3d p-7 sm:p-10"
+                style={desktop ? { transform: "translateZ(48px)" } : undefined}
               >
-                {brand}
-              </h1>
-              <p
-                className="mt-3 text-2xl italic leading-snug text-[#ffd0d9] sm:text-[1.7rem]"
-                style={serifFont}
-              >
-                {tagline}
-              </p>
-              <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/85">{subtitle}</p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <Link
-                  className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#3a1a52] shadow-[0_14px_40px_-12px_rgba(255,255,255,0.55)] transition hover:scale-[1.03] active:scale-[0.98]"
-                  href={primaryCta.href}
+                <div className="flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.26em] text-[#ffc2cd]">
+                  <span className="size-2 rounded-full bg-[#ff5d7a] shadow-[0_0_14px_#ff5d7a]" />
+                  {eyebrow}
+                </div>
+                <h1
+                  className="mt-5 text-5xl leading-[1.02] tracking-[-0.02em] text-white [text-shadow:0_6px_24px_rgba(20,6,40,0.45)] sm:text-6xl"
+                  style={serifFont}
                 >
-                  {primaryCta.label}
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  className="text-sm font-semibold text-white/90 underline decoration-white/40 underline-offset-[6px] transition hover:text-white hover:decoration-white"
-                  href={secondaryCta.href}
+                  {brand}
+                </h1>
+                <p
+                  className="mt-3 text-2xl italic leading-snug text-[#ffd0d9] sm:text-[1.7rem]"
+                  style={serifFont}
                 >
-                  {secondaryCta.label}
-                </Link>
+                  {tagline}
+                </p>
+                <p className="mt-5 max-w-md text-[15px] leading-relaxed text-white/85">{subtitle}</p>
+                <div
+                  className="hero-3d mt-8 flex flex-wrap items-center gap-4"
+                  style={desktop ? { transform: "translateZ(22px)" } : undefined}
+                >
+                  <Link
+                    className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#3a1a52] shadow-[0_18px_40px_-10px_rgba(20,6,40,0.6),0_0_30px_-6px_rgba(255,255,255,0.5)] transition hover:scale-[1.03] active:scale-[0.98]"
+                    href={primaryCta.href}
+                  >
+                    {primaryCta.label}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                  <Link
+                    className="text-sm font-semibold text-white/90 underline decoration-white/40 underline-offset-[6px] transition hover:text-white hover:decoration-white"
+                    href={secondaryCta.href}
+                  >
+                    {secondaryCta.label}
+                  </Link>
+                </div>
               </div>
             </motion.div>
           </Reveal>
@@ -345,48 +377,55 @@ export function HeroScene({
           <Reveal className="hidden lg:block" delay={0.2} y={26}>
             <div className="hero-float">
               <motion.div
+                className="hero-3d"
                 style={
-                  tiltEnabled
+                  desktop
                     ? {
-                        transformPerspective: 1400,
+                        transformPerspective: 1100,
                         rotateY: rightRotY,
                         rotateX: rightRotX,
-                        rotateZ: 2.5,
+                        rotateZ: 3.5,
                         x: rightX,
                       }
                     : undefined
                 }
               >
-                <Link
-                  className="hero-glass group block rounded-[2.25rem] p-5 transition hover:border-white/50"
-                  href={featured.href}
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] bg-white/10">
-                    <Image
-                      alt={featured.imageAlt}
-                      className="object-cover transition duration-700 group-hover:scale-105"
-                      fill
-                      priority
-                      sizes="304px"
-                      src={featured.imageUrl}
-                    />
-                    <span className="absolute left-3 top-3 rounded-full bg-[#2a1646]/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#ffd0d9] backdrop-blur-md">
-                      {featured.badge}
-                    </span>
-                  </div>
-                  <div className="mt-4 flex items-end justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="truncate text-lg text-white" style={serifFont}>
-                        {featured.name}
-                      </div>
-                      <div className="mt-1 text-sm font-semibold text-[#ffc2cd]">
-                        {featured.price}
-                      </div>
+                <Link className="hero-slab hero-slab--b group block" href={featured.href}>
+                  <SlabLayers sheenX={sheenX} />
+                  <div
+                    className="hero-slab-content hero-3d p-5"
+                    style={desktop ? { transform: "translateZ(36px)" } : undefined}
+                  >
+                    <div
+                      className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] bg-white/10 shadow-[0_26px_40px_-14px_rgba(20,6,40,0.7)]"
+                      style={desktop ? { transform: "translateZ(26px)" } : undefined}
+                    >
+                      <Image
+                        alt={featured.imageAlt}
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                        fill
+                        priority
+                        sizes="304px"
+                        src={featured.imageUrl}
+                      />
+                      <span className="absolute left-3 top-3 rounded-full bg-[#2a1646]/70 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#ffd0d9] backdrop-blur-md">
+                        {featured.badge}
+                      </span>
                     </div>
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#3a1a52] transition group-hover:bg-white">
-                      {featured.viewLabel}
-                      <ArrowRight className="size-3.5" />
-                    </span>
+                    <div className="mt-4 flex items-end justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="truncate text-lg text-white" style={serifFont}>
+                          {featured.name}
+                        </div>
+                        <div className="mt-1 text-sm font-semibold text-[#ffc2cd]">
+                          {featured.price}
+                        </div>
+                      </div>
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#3a1a52] shadow-[0_12px_24px_-8px_rgba(20,6,40,0.6)] transition group-hover:bg-white">
+                        {featured.viewLabel}
+                        <ArrowRight className="size-3.5" />
+                      </span>
+                    </div>
                   </div>
                 </Link>
               </motion.div>
@@ -408,53 +447,64 @@ export function HeroScene({
           </button>
 
           <Reveal delay={0.3} y={20}>
-            <nav
+            <motion.nav
               aria-label={categoriesLabel}
-              className="hero-glass relative mt-4 rounded-[2.5rem] px-12 py-4 sm:px-16 lg:[transform:perspective(1600px)_rotateX(5deg)]"
+              className="hero-slab hero-slab--strip mt-4"
+              style={
+                desktop
+                  ? { transformPerspective: 1300, rotateX: stripRotX, rotateY: stripRotY }
+                  : undefined
+              }
             >
-              <button
-                aria-label="Previous"
-                className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-white/30 bg-white/10 transition hover:bg-white/25 sm:left-5"
-                onClick={() => scrollStrip(-1)}
-                type="button"
+              <SlabLayers sheenX={sheenX} />
+              <div
+                className="hero-slab-content hero-3d px-12 py-4 sm:px-16"
+                style={desktop ? { transform: "translateZ(30px)" } : undefined}
               >
-                <ChevronLeft className="size-5" />
-              </button>
-              <ul
-                className="flex snap-x gap-3 overflow-x-auto pb-1 sm:justify-center sm:gap-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                ref={stripRef}
-              >
-                {categories.map((category) => (
-                  <li className="shrink-0 snap-start" key={category.href}>
-                    <Link
-                      className="group flex w-24 flex-col items-center gap-2 text-center sm:w-28"
-                      href={category.href}
-                    >
-                      <span className="relative size-16 overflow-hidden rounded-full ring-2 ring-white/35 transition duration-300 group-hover:scale-110 group-hover:ring-white/80 sm:size-[4.5rem]">
-                        <Image
-                          alt=""
-                          className="object-cover"
-                          fill
-                          sizes="72px"
-                          src={category.imageUrl}
-                        />
-                      </span>
-                      <span className="text-xs font-semibold leading-tight text-white/90 group-hover:text-white">
-                        {category.name}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <button
-                aria-label="Next"
-                className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-white/30 bg-white/10 transition hover:bg-white/25 sm:right-5"
-                onClick={() => scrollStrip(1)}
-                type="button"
-              >
-                <ChevronRight className="size-5" />
-              </button>
-            </nav>
+                <button
+                  aria-label="Previous"
+                  className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-white/30 bg-white/10 transition hover:bg-white/25 sm:left-5"
+                  onClick={() => scrollStrip(-1)}
+                  type="button"
+                >
+                  <ChevronLeft className="size-5" />
+                </button>
+                <ul
+                  className="flex snap-x gap-3 overflow-x-auto pb-1 sm:justify-center sm:gap-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  ref={stripRef}
+                >
+                  {categories.map((category) => (
+                    <li className="shrink-0 snap-start" key={category.href}>
+                      <Link
+                        className="group flex w-24 flex-col items-center gap-2 text-center sm:w-28"
+                        href={category.href}
+                      >
+                        <span className="relative size-16 overflow-hidden rounded-full ring-2 ring-white/35 shadow-[0_14px_24px_-8px_rgba(20,6,40,0.7)] transition duration-300 group-hover:scale-110 group-hover:ring-white/80 sm:size-[4.5rem]">
+                          <Image
+                            alt=""
+                            className="object-cover"
+                            fill
+                            sizes="72px"
+                            src={category.imageUrl}
+                          />
+                        </span>
+                        <span className="text-xs font-semibold leading-tight text-white/90 group-hover:text-white">
+                          {category.name}
+                        </span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  aria-label="Next"
+                  className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border border-white/30 bg-white/10 transition hover:bg-white/25 sm:right-5"
+                  onClick={() => scrollStrip(1)}
+                  type="button"
+                >
+                  <ChevronRight className="size-5" />
+                </button>
+              </div>
+            </motion.nav>
           </Reveal>
         </div>
       </div>

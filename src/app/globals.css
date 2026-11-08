@@ -203,3 +203,60 @@
   .hero-rose-sway,
   .hero-rose-glow { animation: none; }
 }
+/* 3D cam levha: arkada kalinlik plakasi, ortada buzlu cam, uste parlama */
+.hero-3d {
+  transform-style: preserve-3d;
+}
+
+.hero-slab {
+  position: relative;
+  transform-style: preserve-3d;
+}
+
+.hero-slab--a { border-radius: 3.4rem 2.2rem 3.6rem 2.6rem; }
+.hero-slab--b { border-radius: 2.4rem 3.4rem 2.6rem 3.2rem; }
+.hero-slab--strip { border-radius: 3.2rem 3.2rem 4rem 4rem / 2.2rem 2.2rem 3rem 3rem; }
+
+.hero-slab-back {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(145deg, rgba(130, 80, 200, 0.55), rgba(24, 10, 44, 0.78));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 44px 70px -30px rgba(10, 0, 30, 0.75);
+  transform: translateZ(-18px);
+  pointer-events: none;
+}
+
+.hero-slab-glass {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.28) 0%, rgba(170, 120, 225, 0.2) 45%, rgba(40, 18, 70, 0.3) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow:
+    inset 2px 3px 1px rgba(255, 255, 255, 0.4),
+    inset -3px -4px 14px rgba(175, 115, 255, 0.3),
+    inset 0 0 44px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  pointer-events: none;
+  transition: border-color 0.3s ease;
+}
+
+.group:hover .hero-slab-glass {
+  border-color: rgba(255, 255, 255, 0.65);
+}
+
+.hero-slab-sheen {
+  position: absolute;
+  inset: 0 -40%;
+  background: linear-gradient(112deg, transparent 30%, rgba(255, 255, 255, 0.3) 44%, rgba(255, 255, 255, 0.05) 52%, transparent 62%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hero-slab-content {
+  position: relative;
+}
