@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Building2, Clock, Hash, Mail, MapPin, Phone } from "lucide-react";
+import { Building2, Clock, Mail, MapPin, Phone } from "lucide-react";
 
 import { ContactForm } from "@/components/contact-form";
 import { getLocale } from "@/lib/i18n";
 import {
   getBrandName,
   getContactEmail,
-  hasSiteConfigValue,
   siteConfig,
 } from "@/lib/site-config";
 
@@ -16,59 +15,45 @@ const copy = {
   tr: {
     metadataTitle: `İletişim | ${brandName}`,
     metadataDescription:
-      "Şirket adresi, telefon, e-posta, KEP, vergi ve MERSİS bilgileri ile iletişim formu.",
+      "Şirket adresi, telefon, e-posta ve destek saatleri ile iletişim formu.",
     eyebrow: "İletişim",
     title: "Bize ulaşın",
     description:
       "Sipariş, teslimat, iade, iptal, teknik destek veya kurumsal talepleriniz için aşağıdaki iletişim kanallarını kullanabilirsiniz.",
     infoTitle: "İletişim Bilgileri",
     mapTitle: "Google Maps",
-    mapDescription: `Harita entegrasyonu için Google Maps iframe veya harita bileşeni bu alana eklenebilir. Adres placeholder: ${siteConfig.address}`,
+    mapDescription: siteConfig.address,
     formTitle: "İletişim Formu",
     formDescription:
       "Form üzerinden ilettiğiniz bilgiler yalnızca talebinize dönüş yapmak ve destek sürecini yürütmek amacıyla kullanılır.",
     labels: {
       address: "Adres",
-      chamberOfCommerce: "Ticaret Odası",
       companyName: "Şirket / İşletme Adı",
-      contactPerson: "Yetkili Kişi",
       email: "E-posta",
-      kepAddress: "KEP Adresi",
-      mersisNo: "MERSİS Numarası",
       phone: "Telefon",
       supportHours: "Destek Saatleri",
-      taxNumber: "Vergi Numarası",
-      taxOffice: "Vergi Dairesi",
-      tradeRegistryNo: "Ticaret Sicil No",
     },
   },
   en: {
     metadataTitle: `Contact | ${brandName}`,
     metadataDescription:
-      "Contact form and company details including address, phone, email, KEP, tax, and MERSIS information.",
+      "Contact form and company details including address, phone, email, and support hours.",
     eyebrow: "Contact",
     title: "Get in touch",
     description:
       "Use the contact channels below for orders, delivery, returns, cancellations, technical support, or corporate requests.",
     infoTitle: "Contact Details",
     mapTitle: "Google Maps",
-    mapDescription: `A Google Maps iframe or map component can be placed here. Address placeholder: ${siteConfig.address}`,
+    mapDescription: siteConfig.address,
     formTitle: "Contact Form",
     formDescription:
       "Information submitted through the form is used only to respond to your request and manage the support process.",
     labels: {
       address: "Address",
-      chamberOfCommerce: "Chamber of Commerce",
       companyName: "Company / Business Name",
-      contactPerson: "Contact Person",
       email: "Email",
-      kepAddress: "KEP Address",
-      mersisNo: "MERSIS Number",
       phone: "Phone",
       supportHours: "Support Hours",
-      taxNumber: "Tax Number",
-      taxOffice: "Tax Office",
-      tradeRegistryNo: "Trade Registry No",
     },
   },
 } as const;
@@ -91,15 +76,8 @@ export default async function ContactPage() {
     { icon: MapPin, label: t.labels.address, value: siteConfig.address },
     { icon: Phone, label: t.labels.phone, value: siteConfig.phone },
     { icon: Mail, label: t.labels.email, value: getContactEmail() },
-    { icon: Mail, label: t.labels.kepAddress, value: siteConfig.kepAddress },
-    { icon: Hash, label: t.labels.taxNumber, value: siteConfig.taxNumber },
-    { icon: Hash, label: t.labels.taxOffice, value: siteConfig.taxOffice },
-    { icon: Hash, label: t.labels.mersisNo, value: siteConfig.mersisNo },
     { icon: Clock, label: t.labels.supportHours, value: siteConfig.supportHours },
-    { icon: Hash, label: t.labels.tradeRegistryNo, value: siteConfig.tradeRegistryNo },
-    { icon: Building2, label: t.labels.chamberOfCommerce, value: siteConfig.chamberOfCommerce },
-    { icon: Building2, label: t.labels.contactPerson, value: siteConfig.contactPerson },
-  ].filter((item) => hasSiteConfigValue(item.value));
+  ];
 
   return (
     <section className="relative overflow-hidden bg-[linear-gradient(180deg,#fcf9f4_0%,#f6eee6_55%,#f2e7dc_100%)] px-4 pb-20 pt-32 text-[#2f2623] sm:px-6 lg:px-8">
