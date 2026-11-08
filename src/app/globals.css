@@ -177,9 +177,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-zoom,
-  .hero-float { animation: none; }
-  .hero-petal { display: none; }
+  section:not([data-hero-motion="on"]) .hero-zoom,
+  section:not([data-hero-motion="on"]) .hero-float { animation: none; }
+  section:not([data-hero-motion="on"]) .hero-petal { display: none; }
 }
 
 .hero-rose-glow {
@@ -220,10 +220,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-rose-sway,
-  .hero-rose-wind,
-  .hero-rose-glow { animation: none; }
+  section:not([data-hero-motion="on"]) .hero-rose-sway,
+  section:not([data-hero-motion="on"]) .hero-rose-wind,
+  section:not([data-hero-motion="on"]) .hero-rose-glow { animation: none; }
 }
+
+[data-hero-motion="off"] :is(.hero-zoom, .hero-float, .hero-rose-sway, .hero-rose-wind, .hero-rose-glow) { animation: none; }
+[data-hero-motion="off"] .hero-petal { display: none; }
 /* 3D cam levha: arkada kalinlik plakasi, ortada buzlu cam, uste parlama */
 .hero-3d {
   transform-style: preserve-3d;

@@ -80,8 +80,10 @@ export function HeroScene({
 }: HeroSceneProps) {
   const reduceMotion = useReducedMotion();
   const [desktop, setDesktop] = useState(false);
+  const [motionOverride, setMotionOverride] = useState<boolean | null>(null);
+  const motionEnabled = motionOverride ?? !reduceMotion;
   // desktop: statik 3D egim ve derinlik. tiltEnabled: ek olarak fareyi takip eden hareket.
-  const tiltEnabled = desktop && !reduceMotion;
+  const tiltEnabled = motionEnabled;
   const stripRef = useRef<HTMLUListElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -129,6 +131,7 @@ export function HeroScene({
     }
     const clamp = (value: number) => Math.max(-1, Math.min(1, value));
     const onMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
       const rect = sectionRef.current?.getBoundingClientRect();
       if (!rect || rect.bottom < 0 || rect.top > window.innerHeight) {
         return;
@@ -160,8 +163,18 @@ export function HeroScene({
   return (
     <section
       className="relative isolate min-h-[100svh] overflow-hidden bg-[#2a1646] text-white"
+      data-hero-motion={motionOverride === null ? undefined : motionEnabled ? "on" : "off"}
       ref={sectionRef}
     >
+      <button
+        type="button"
+        aria-label="Sahne animasyonları"
+        aria-pressed={motionEnabled}
+        onClick={() => setMotionOverride(!motionEnabled)}
+        className="absolute right-4 top-24 z-20 rounded-full border border-white/40 bg-[#2a1646]/80 px-3 py-2 text-xs text-white backdrop-blur-md"
+      >
+        {motionEnabled ? "Animasyonu durdur" : "Animasyonu aç"}
+      </button>
       {/* Sahne: arka plan ve gul ayni kutuda, boylece hizalari her ekranda korunur */}
       <div className="absolute inset-0 -z-30 [container-type:size]">
         <div

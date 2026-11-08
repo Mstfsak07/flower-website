@@ -10,6 +10,7 @@ import { validateCheckout, validateCoupon } from "@/lib/services/checkout-servic
 import { resolveCanonicalCartItems } from "@/lib/services/catalog-service";
 import { calculateGrandTotal } from "@/lib/commerce";
 import type { Order, OrderStatus, PaymentStatus } from "@/lib/types";
+import { onlinePaymentEnabled } from "@/lib/payment-flags";
 import { generateOrderNumber } from "@/lib/utils";
 
 function toOrderStatus(paymentMethod: string): { status: OrderStatus; paymentStatus: PaymentStatus } {
@@ -55,6 +56,13 @@ export async function POST(request: Request) {
   }
 
   const data = parsed.data;
+
+  if (data.paymentMethod === "CARD" && !onlinePaymentEnabled) {
+    return NextResponse.json(
+      { message: "Online kart ödemesi şu anda aktif değil. Lütfen Havale / EFT yöntemini seçin." },
+      { status: 422 },
+    );
+  }
 
   const checkoutInfo = await validateCheckout(data);
   if (!checkoutInfo.deliveryZone) {

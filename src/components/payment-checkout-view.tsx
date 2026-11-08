@@ -12,6 +12,7 @@ import { CreditCard, Wallet } from "lucide-react";
 import { CheckoutConsentFields } from "@/components/checkout-consent-fields";
 import { useStore } from "@/components/providers/store-provider";
 import { coupons, getLocalizedProduct, getProductById } from "@/lib/data";
+import { onlinePaymentEnabled } from "@/lib/payment-flags";
 import type { Locale } from "@/lib/locale";
 import type { Order } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
@@ -54,6 +55,11 @@ const copy = {
   tr: {
     addressLine: "Açık Adres",
     approvals: "Onaylar",
+    bankTransfer: "Havale / EFT",
+    bankTransferHint: "Siparişten sonra hesap bilgileri iletilir, ödemeniz onaylanınca çiçeğiniz yola çıkar.",
+    cardSoon: "Kredi / Banka Kartı",
+    cardSoonHint: "Online kart ödemesi şu an aktif değil.",
+    soon: "Yakında",
     backToShop: "Mağazaya Dön",
     cardName: "Kart Sahibinin Adı",
     cardNumber: "Kart Numarası",
@@ -86,6 +92,11 @@ const copy = {
   en: {
     addressLine: "Full Address",
     approvals: "Approvals",
+    bankTransfer: "Bank transfer",
+    bankTransferHint: "Account details are sent after you order; your flowers ship once the payment is confirmed.",
+    cardSoon: "Credit / Debit card",
+    cardSoonHint: "Online card payment is not active yet.",
+    soon: "Coming soon",
     backToShop: "Return to Shop",
     cardName: "Cardholder Name",
     cardNumber: "Card Number",
@@ -129,7 +140,7 @@ export function PaymentCheckoutView({ locale, serifClassName }: PaymentCheckoutV
       district: "Kadikoy",
       neighborhood: "Caddebostan",
       deliverySlot: "12:00 - 15:00",
-      paymentMethod: "CARD",
+      paymentMethod: onlinePaymentEnabled ? "CARD" : "BANK_TRANSFER",
       acceptDistanceSales: false,
       readPrivacyPolicy: false,
       readReturnPolicy: false,
@@ -319,6 +330,27 @@ export function PaymentCheckoutView({ locale, serifClassName }: PaymentCheckoutV
               <Wallet className="h-5 w-5 text-neutral-500" />
             </div>
           </div>
+          {!onlinePaymentEnabled ? (
+            <div className="space-y-3 rounded-xl border border-[#4d46351a] bg-[#0e0e0e] p-6 shadow-2xl">
+              <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-[#f2ca5055] bg-[#1c1b1b] p-4">
+                <input className="mt-1" {...form.register("paymentMethod")} type="radio" value="BANK_TRANSFER" />
+                <span>
+                  <span className="block text-sm font-semibold text-[#e5e2e1]">{t.bankTransfer}</span>
+                  <span className="mt-1 block text-xs leading-5 text-neutral-400">{t.bankTransferHint}</span>
+                </span>
+              </label>
+              <div aria-disabled="true" className="flex items-start gap-3 rounded-lg border border-[#4d46351a] bg-[#161616] p-4 opacity-60">
+                <input className="mt-1" disabled readOnly type="radio" />
+                <span>
+                  <span className="flex items-center gap-2 text-sm font-semibold text-[#e5e2e1]">
+                    {t.cardSoon}
+                    <span className="rounded-full bg-[#e9c349] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#241a00]">{t.soon}</span>
+                  </span>
+                  <span className="mt-1 block text-xs leading-5 text-neutral-400">{t.cardSoonHint}</span>
+                </span>
+              </div>
+            </div>
+          ) : (
           <div className="rounded-xl border border-[#4d46351a] bg-[#0e0e0e] p-8 shadow-2xl">
             <div className="space-y-6">
               <div>
@@ -342,6 +374,7 @@ export function PaymentCheckoutView({ locale, serifClassName }: PaymentCheckoutV
               <input {...form.register("paymentMethod")} type="hidden" value="CARD" />
             </div>
           </div>
+          )}
         </section>
 
         {submitError ? <p className="text-sm text-red-400">{submitError}</p> : null}
