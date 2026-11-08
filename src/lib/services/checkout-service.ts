@@ -1,4 +1,5 @@
 import type { CheckoutPayload } from "@/lib/types";
+import { onlinePaymentEnabled } from "@/lib/payment-flags";
 import { calculateCouponDiscount, calculateGrandTotal } from "@/lib/commerce";
 import { findDeliveryZone, getCouponByCode } from "@/lib/services/catalog-service";
 
@@ -8,7 +9,9 @@ export async function validateCheckout(payload: CheckoutPayload) {
   return {
     deliveryZone: zone ?? null,
     supportsSameDay: Boolean(zone?.sameDayAvailable),
-    paymentOptions: ["CARD", "BANK_TRANSFER", "CASH_ON_DELIVERY"],
+    paymentOptions: onlinePaymentEnabled
+      ? (["CARD", "BANK_TRANSFER", "CASH_ON_DELIVERY"] as const)
+      : (["BANK_TRANSFER", "CASH_ON_DELIVERY"] as const),
   };
 }
 
