@@ -183,15 +183,29 @@
   animation: rose-glow 6s ease-in-out infinite alternate;
 }
 
+/* Ruzgarda gul: dis katman yavas ve az, ic katman dipten bukulerek cicek basini daha cok oynatir.
+   Iki sure (9s ve 5.3s) birbirine oturmadigi icin hareket tekrar etmeyen, dogal bir his verir. */
 .hero-rose-sway {
-  transform-origin: 50% 82%;
-  animation: rose-sway 7s ease-in-out infinite alternate;
+  transform-origin: 50% 88%;
+  animation: rose-sway 9s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.hero-rose-wind {
+  transform-origin: 50% 90%;
+  animation: rose-wind 5.3s ease-in-out infinite alternate;
   will-change: transform;
 }
 
 @keyframes rose-sway {
-  from { transform: rotate(-1.4deg); }
-  to { transform: rotate(1.4deg) translateY(-6px); }
+  from { transform: rotate(-0.9deg); }
+  to { transform: rotate(0.9deg) translateY(-3px); }
+}
+
+@keyframes rose-wind {
+  0% { transform: skewX(-2.4deg) rotate(-0.5deg); }
+  45% { transform: skewX(1.2deg) rotate(0.3deg); }
+  100% { transform: skewX(3deg) rotate(0.9deg); }
 }
 
 @keyframes rose-glow {
@@ -201,6 +215,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-rose-sway,
+  .hero-rose-wind,
   .hero-rose-glow { animation: none; }
 }
 /* 3D cam levha: arkada kalinlik plakasi, ortada buzlu cam, uste parlama */

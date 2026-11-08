@@ -37,16 +37,6 @@ const copy = {
   },
 } as const;
 
-// data.ts içindeki Türkçe kategori adları aksansız olduğu için vitrinde düzeltilmiş adlar kullanılır.
-const trCategoryNames: Record<string, string> = {
-  "tekli-guller": "Tekli Güller",
-  "mini-buketler": "Mini Buketler",
-  "orta-boy-buketler": "Orta Boy Buketler",
-  "premium-buketler": "Premium Buketler",
-  "saksi-cicekleri": "Saksı Çiçekleri",
-  "toptan-etkinlik-cicekleri": "Toptan & Etkinlik",
-};
-
 type HeroProps = { locale: Locale };
 
 export function Hero({ locale }: HeroProps) {
@@ -56,7 +46,7 @@ export function Hero({ locale }: HeroProps) {
   const leadImage = leadProduct.images[0];
 
   const stripCategories = categories
-    .filter((category) => category.isActive)
+    .filter((category) => category.isActive && category.group === "type")
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((category) => {
       const sample = getProductsByCategory(category.slug).find((item) => item.images.length > 0);
@@ -65,7 +55,7 @@ export function Hero({ locale }: HeroProps) {
       }
       const localized = getLocalizedCategory(category, locale);
       return {
-        name: locale === "tr" ? (trCategoryNames[category.slug] ?? localized.name) : localized.name,
+        name: localized.name,
         href: `/kategori/${category.slug}`,
         imageUrl: sample.images[0].imageUrl,
       };

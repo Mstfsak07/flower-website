@@ -75,6 +75,7 @@ export type Category = {
   imageUrl: string;
   isActive: boolean;
   sortOrder: number;
+  group: "type" | "occasion";
 };
 
 export type Product = {

@@ -214,14 +214,16 @@ export function HeroScene({
                   className="hero-rose-sway relative size-full"
                   style={{ maskImage: roseMask, WebkitMaskImage: roseMask }}
                 >
-                  <Image
-                    alt=""
-                    className="object-contain"
-                    fill
-                    priority
-                    sizes="30vw"
-                    src="/hero/layers/rose.png"
-                  />
+                  <div className="hero-rose-wind relative size-full">
+                    <Image
+                      alt=""
+                      className="object-contain"
+                      fill
+                      priority
+                      sizes="30vw"
+                      src="/hero/layers/rose.png"
+                    />
+                  </div>
                 </div>
               </motion.div>
             </motion.div>
