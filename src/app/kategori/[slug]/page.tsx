@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Manrope, Noto_Serif } from "next/font/google";
 import type { Metadata } from "next";
 
 import { ShopProductGrid } from "@/components/shop-product-grid";
@@ -10,10 +9,8 @@ import {
   getLocalizedCategory,
   getProductsByCategory,
 } from "@/lib/data";
+import { manrope as sans, notoSerif as serif } from "@/lib/fonts";
 import { getLocale } from "@/lib/i18n";
-
-const serif = Noto_Serif({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
-const sans = Manrope({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 const copy = {
   tr: {

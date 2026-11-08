@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
+
+import "@fontsource-variable/manrope/wght.css";
+import "@fontsource-variable/noto-serif/wght.css";
+import "@fontsource-variable/noto-serif/wght-italic.css";
+import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 import { LayoutChrome } from "@/components/layout-chrome";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -7,21 +11,10 @@ import { Providers } from "@/components/providers/providers";
 import { JsonLd } from "@/components/json-ld";
 import { SiteFooter } from "@/components/site-footer";
 import { siteSettings } from "@/lib/data";
+import { plusJakartaSans } from "@/lib/fonts";
 import { getDictionary, getLocale } from "@/lib/i18n";
 import { getSiteUrlOrigin } from "@/lib/site-url";
 import "./globals.css";
-
-const notoSerif = Noto_Serif({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-sans",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: siteSettings.seoTitle,
@@ -45,7 +38,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${notoSerif.variable} ${plusJakarta.variable}`}
+      className={plusJakartaSans.className}
       style={{ backgroundColor: "#fcf9f4" }}
     >
       <body style={{

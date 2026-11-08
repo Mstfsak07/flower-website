@@ -1,17 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Plus_Jakarta_Sans, Noto_Serif } from "next/font/google";
 import type { Locale } from "@/lib/locale";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+import { notoSerif as serif, plusJakartaSans as sans } from "@/lib/fonts";
 
 const sectionImages = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAJ26gW42UQHroP7wM7tdzhVm9CJ5PwyP5VwEtdWYA_cjLDs7IUDTbPCUXwDLAsUVDSzUUoNc0WLFWlrUkF3TV93BgG7IuCrZVG8GOnVYcEuyCvTKE8aCBqy3irHZzR6oZMzgb_1n1sb1yJIJtBQJuKsU7QYpyvZ2HHkeeqQWlUU1-m3t-6e3NRPK2TfHSLyxL8tLbT3-DlUiyM1rIBISYlYAJ0z6CEsC-BqRFClkH3Tk1TXAWR7z8Ti7AHiU04CoThLeSAbY-5w8hp",

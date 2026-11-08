@@ -1,13 +1,6 @@
-import { Noto_Serif } from "next/font/google";
-
 import { WholesaleFormView } from "@/components/wholesale-form-view";
+import { notoSerif as display } from "@/lib/fonts";
 import { getDictionary } from "@/lib/i18n";
-
-const display = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-});
 
 export default async function WholesalePage() {
   const dict = await getDictionary();

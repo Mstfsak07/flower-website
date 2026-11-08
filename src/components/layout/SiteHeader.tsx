@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Noto_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import { ChevronDown, House, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 
 import { AuthNavAction } from "@/components/auth-nav-action";
@@ -11,17 +10,8 @@ import { CartNavLink } from "@/components/cart-nav-link";
 import { IrisMark } from "@/components/iris-mark";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useStore } from "@/components/providers/store-provider";
+import { notoSerif as serif, plusJakartaSans as sans } from "@/lib/fonts";
 import type { Locale } from "@/lib/locale";
-
-const serif = Noto_Serif({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 const copy = {
   tr: {

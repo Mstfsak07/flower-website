@@ -2,6 +2,8 @@
 
 /* ── Stitch "Vivid Botanic" Design System ── */
 :root {
+  --font-display: "Noto Serif Variable", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans Variable", Arial, sans-serif;
   --primary: #aa2e28;
   --primary-container: #cc473e;
   --on-primary: #ffffff;
@@ -55,7 +57,7 @@
 
   body {
     margin: 0;
-    font-family: "Plus Jakarta Sans", sans-serif;
+    font-family: var(--font-sans);
     background-color: #fcf9f4 !important;
     color: #1c1c19;
     -webkit-font-smoothing: antialiased;
@@ -73,6 +75,10 @@
     text-decoration: none;
   }
 }
+
+.font-noto-serif { font-family: "Noto Serif Variable", Georgia, serif; }
+.font-manrope { font-family: "Manrope Variable", Arial, sans-serif; }
+.font-plus-jakarta { font-family: var(--font-sans); }
 
 /* ── Section backgrounds ── */
 .bg-surface          { background-color: #fcf9f4 !important; }
