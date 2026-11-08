@@ -413,7 +413,6 @@ export function HeroScene({
                   >
                     <div
                       className="relative aspect-[4/5] overflow-hidden rounded-[1.6rem] bg-white/10 shadow-[0_26px_40px_-14px_rgba(20,6,40,0.7)]"
-                      style={desktop ? { transform: "translateZ(26px)" } : undefined}
                     >
                       <Image
                         alt={featured.imageAlt}
