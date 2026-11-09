@@ -6,10 +6,8 @@ import "@fontsource-variable/noto-serif/wght-italic.css";
 import "@fontsource-variable/plus-jakarta-sans/wght.css";
 
 import { LayoutChrome } from "@/components/layout-chrome";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Providers } from "@/components/providers/providers";
 import { JsonLd } from "@/components/json-ld";
-import { SiteFooter } from "@/components/site-footer";
 import { siteSettings } from "@/lib/data";
 import { plusJakartaSans } from "@/lib/fonts";
 import { getDictionary, getLocale } from "@/lib/i18n";
@@ -74,10 +72,12 @@ export default async function RootLayout({
             />
             <LayoutChrome currentLocale={locale} />
             <main id="main-content">{children}</main>
-            <SiteFooter currentLocale={locale} />
-            <div style={{ position: "fixed", bottom: "1.5rem", right: "1.5rem", zIndex: 70 }}>
-              <LanguageSwitcher currentLocale={locale} label={dictionary.common.languageLabel} />
-            </div>
+            <LayoutChrome area="footer" currentLocale={locale} />
+            <LayoutChrome
+              area="language"
+              currentLocale={locale}
+              languageLabel={dictionary.common.languageLabel}
+            />
           </div>
         </Providers>
       </body>
