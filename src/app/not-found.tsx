@@ -1,23 +1,3 @@
+import Image from "next/image";
 import Link from "next/link";
-
-export default function NotFound() {
-  return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
-      <div className="panel p-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[var(--color-accent)]">
-          404
-        </p>
-        <h1 className="mt-4 font-serif text-5xl text-[var(--color-ink)]">Aradigin sayfa yok.</h1>
-        <p className="mt-4 text-base leading-7 text-[var(--color-muted)]">
-          Urun kaldirilmis olabilir ya da baglanti hatali olabilir.
-        </p>
-        <Link
-          className="mt-6 inline-flex rounded-full bg-[var(--color-ink)] px-5 py-3 text-sm font-semibold text-white"
-          href="/"
-        >
-          Ana sayfaya don
-        </Link>
-      </div>
-    </div>
-  );
-}
+export default function NotFound(){ return <section className="mx-auto grid min-h-[650px] max-w-[1100px] items-center gap-8 px-5 py-16 md:grid-cols-2"><div><p className="font-noto-serif text-8xl font-bold text-[#d5aaa4]">404</p><h1 className="mt-2 font-noto-serif text-4xl font-bold">Bu çiçek başka bir bahçede.</h1><p className="mt-4 text-sm leading-7 text-[#6e6761]">Aradığınız sayfa taşınmış veya artık burada olmayabilir. Taze tasarımlarımıza göz atabilirsiniz.</p><Link href="/magaza" className="mt-7 inline-flex rounded-full bg-[#aa2e28] px-7 py-3.5 text-sm font-bold text-white">Mağazaya dön</Link></div><div className="relative aspect-square overflow-hidden rounded-[35px]"><Image src="/stitch-pages/notfound-01.jpg" alt="Kır çiçekleri" fill className="object-cover"/></div></section> }

@@ -360,7 +360,7 @@ function product(
     compareAtPrice,
     costPrice: Math.round(basePrice * 0.62),
     isActive: true,
-    isFeatured: ["p1", "p6", "p10", "p12"].includes(id),
+    isFeatured: ["p1", "p2", "p7", "p9"].includes(id),
     stockTracking: true,
     stockQuantity: 12 + Number(id.replace("p", "")),
     minPreparationHours: 2,
@@ -432,7 +432,7 @@ function product(
   };
 }
 
-export const products: Product[] = [
+const legacyProducts: Product[] = [
   product(
     "p1",
     "Gül Buketi",
@@ -746,6 +746,25 @@ export const products: Product[] = [
     "25 adet kırmızı gülden gösterişli, özel gün buketi.",
     ["Zarif"],
   ),
+];
+
+void legacyProducts;
+
+export const products: Product[] = [
+  product("p1", "Kaleci Romansı 15'li Kırmızı Gül", "kaleci-romansi-kirmizi-gul", "cat-gul-buketleri", 580, 650, "/stitch-pages/store-01.jpg", "Aşkın en tutkulu tonlarını taşıyan 15 dal kırmızı gül ve okaliptüs tasarımı.", ["Bugün Teslim", "En Çok Satan"]),
+  product("p2", "Lara Pembesi Şakayık Aranjmanı", "lara-pembesi-sakayik-aranjmani", "cat-buketler", 740, undefined, "/stitch-pages/store-02.jpg", "Pastel şakayıklar, lisyanthus ve okaliptüsle hazırlanan romantik Kepez seçkisi.", ["Bugün Teslim", "Pastel"]),
+  product("p3", "Beyaz İnci Çift Kandilli Orkide", "beyaz-inci-cift-kandilli-orkide", "cat-orkideler", 690, undefined, "/stitch-pages/store-03.jpg", "Zarif seramik saksısında çift dallı beyaz orkide ve doğal yosun dokusu.", ["Uzun Ömürlü", "Zarif"]),
+  product("p4", "Akdeniz Güneşi Papatya Demeti", "akdeniz-gunesi-papatya-demeti", "cat-buketler", 350, undefined, "/stitch-pages/store-04.jpg", "Mevsimin taze papatyaları ve yeşillikleriyle hazırlanan doğal kraft demet.", ["Bugün Teslim", "Taze Kesim"]),
+  product("p5", "Kutuda Solmayan Kırmızı Aşk Gülleri", "kutuda-solmayan-kirmizi-ask-gulleri", "cat-solmayan-guller", 820, undefined, "/stitch-pages/store-05.jpg", "Özel işlemle kalıcılığını koruyan kırmızı güllerin zarif kutu sunumu.", ["3 Yıl Solmayan", "Kalıcı"]),
+  product("p6", "Konyaaltı Meltemi Mor Lisyanthus", "konyaalti-meltemi-mor-lisyanthus", "cat-buketler", 490, undefined, "/stitch-pages/store-06.jpg", "Zarif mor lisyanthusların ipek kurdeleyle bağlandığı sıcak tebrik buketi.", ["Bugün Teslim", "Tebrik"]),
+  product("p7", "Antalya Günbatımı Şeftali Gül Buketi", "antalya-gunbatimi-seftali-gul-buketi", "cat-buketler", 620, undefined, "/stitch-pages/store-07.jpg", "Şeftali bahçe gülleri, lisyanthus ve okaliptüsle hazırlanan imza buketimiz.", ["Bugün Teslim", "Tasarım"]),
+  product("p8", "Beyaz Zambak & Kazablanka Sepeti", "beyaz-zambak-kazablanka-sepeti", "cat-aranjmanlar", 780, undefined, "/stitch-pages/store-08.jpg", "Kazablanka zambakları ve mevsim yeşillikleriyle hazırlanan hasır sepet.", ["Aynı Gün", "Tebrik"]),
+  product("p9", "Riva Royal Velvet Kutusu", "riva-royal-velvet-kutusu", "cat-aranjmanlar", 950, undefined, "/stitch-pages/arrangements-01.jpg", "Kadife dokulu silindirik kutuda 25 adet kırmızı gül ve okaliptüs.", ["Taze Kesim", "En Çok Tercih Edilen"]),
+  product("p10", "Akdeniz Meltemi Seramik Vazo", "akdeniz-meltemi-seramik-vazo", "cat-aranjmanlar", 1200, undefined, "/stitch-pages/arrangements-02.jpg", "El yapımı seramik vazoda lisyanthus, şeftali gülleri ve taze dallar.", ["Tasarım Ürünü", "Seramik Vazo"]),
+  product("p11", "Toros Bahçesi Ahşap Kasa", "toros-bahcesi-ahsap-kasa", "cat-aranjmanlar", 680, undefined, "/stitch-pages/arrangements-03.jpg", "Doğal ahşap kasada mevsim çiçekleriyle hazırlanan rustik atölye tasarımı.", ["Doğal Ahşap Kasa"]),
+  product("p12", "Sonsuz Aşk Cam Fanus", "sonsuz-ask-cam-fanus", "cat-solmayan-guller", 850, undefined, "/stitch-pages/arrangements-04.jpg", "Cam fanusta üç yıl canlılığını koruyan kırmızı solmayan gül.", ["3 Yıl Garantili", "Solmayan"]),
+  product("p13", "Kır Neşesi Örme Sepet", "kir-nesesi-orme-sepet", "cat-aranjmanlar", 450, undefined, "/stitch-pages/arrangements-05.jpg", "Taze papatyalar ve mevsim yeşillikleriyle hazırlanan hasır sepet aranjmanı.", ["Taze Hasat", "Hasır Sepet"]),
+  product("p14", "Kalıcı Zarafeti Lüks Kutu", "kalici-zarafeti-luks-kutu", "cat-aranjmanlar", 1150, undefined, "/stitch-pages/arrangements-06.jpg", "Mermer desenli kutuda 30 adet beyaz ve pudra tonlu premium gül.", ["Özel Koleksiyon", "Lüks Kutu"]),
 ];
 
 export const featuredProducts = products.filter((product) => product.isFeatured);

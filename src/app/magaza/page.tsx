@@ -1,2 +1,2 @@
-export { generateMetadata } from "../arama/page";
-export { default } from "../arama/page";
+import { StorefrontPage } from "@/components/botanical/catalog";
+export default StorefrontPage;

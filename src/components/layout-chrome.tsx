@@ -2,8 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
+import { BotanicalHeader as SiteHeader, BotanicalFooter as SiteFooter } from "@/components/botanical/site-shell";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Locale } from "@/lib/locale";
 
