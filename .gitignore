@@ -57,3 +57,6 @@ public/ss.png
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# QA screenshots
+/.qa
