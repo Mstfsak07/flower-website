@@ -1,2 +1,3 @@
 import { SuccessPage } from "@/components/botanical/commerce-pages";
-export default function OrderSuccessPage(){ return <SuccessPage/>; }
+import { getLocale } from "@/lib/i18n";
+export default async function OrderSuccessPage(){ return <SuccessPage locale={await getLocale()}/>; }

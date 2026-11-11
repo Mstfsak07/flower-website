@@ -1,2 +1,3 @@
 import { ContactPage } from "@/components/botanical/content-pages";
-export default ContactPage;
+import { getLocale } from "@/lib/i18n";
+export default async function Contact(){ return <ContactPage locale={await getLocale()}/>; }

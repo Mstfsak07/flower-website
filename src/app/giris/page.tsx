@@ -1,2 +1,3 @@
 import { LoginPage } from "@/components/botanical/commerce-pages";
-export default LoginPage;
+import { getLocale } from "@/lib/i18n";
+export default async function AuthPage(){ return <LoginPage locale={await getLocale()}/>; }

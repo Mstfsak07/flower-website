@@ -1,2 +1,3 @@
 import { CheckoutPage } from "@/components/botanical/commerce-pages";
-export default function PaymentPage(){ return <CheckoutPage payment/>; }
+import { getLocale } from "@/lib/i18n";
+export default async function PaymentPage(){ return <CheckoutPage payment locale={await getLocale()}/>; }

@@ -24,10 +24,12 @@ type DeliveryRegionDef = {
 
 const deliveryRegionDefs: DeliveryRegionDef[] = [
   { district: "Kepez", fee: 0, minDeliveryHours: 2 },
-  { district: "Muratpaşa", fee: 200, minDeliveryHours: 2 },
-  { district: "Konyaaltı", fee: 400, minDeliveryHours: 3 },
-  { district: "Aksu", fee: 300, minDeliveryHours: 3 },
-  { district: "Döşemealtı", fee: 350, minDeliveryHours: 3 },
+  { district: "Muratpaşa", fee: 150, minDeliveryHours: 2 },
+  { district: "Aksu", fee: 200, minDeliveryHours: 3 },
+  { district: "Döşemealtı", fee: 250, minDeliveryHours: 3 },
+  { district: "Konyaaltı", fee: 300, minDeliveryHours: 3 },
+  { district: "Belek", fee: 450, minDeliveryHours: 4 },
+  { district: "Serik", fee: 500, minDeliveryHours: 4 },
 ];
 
 export const antalyaDeliveryZones: DeliveryZone[] = deliveryRegionDefs.map((region) => ({

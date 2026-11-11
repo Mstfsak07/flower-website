@@ -14,8 +14,70 @@ type StoredAccount = {
   emailVerified?: boolean;
   phone?: string;
   passwordHash?: string;
+  googleSubject?: string;
   role: "CUSTOMER" | "ADMIN";
 };
+
+export async function upsertGoogleCustomerAccount(input: {
+  subject: string;
+  name: string;
+  email: string;
+}) {
+  const email = normalizeEmail(input.email);
+
+  if (await canUseDatabase()) {
+    try {
+      const account = await prisma.user.upsert({
+        where: { email },
+        create: {
+          email,
+          emailVerifiedAt: new Date(),
+          googleSubject: input.subject,
+          name: input.name.trim() || email.split("@")[0],
+          role: "CUSTOMER",
+        },
+        update: {
+          emailVerifiedAt: new Date(),
+          googleSubject: input.subject,
+          name: input.name.trim() || undefined,
+        },
+        select: {
+          id: true,
+          email: true,
+          emailVerifiedAt: true,
+          name: true,
+          phone: true,
+          role: true,
+        },
+      });
+      return toAuthUser(account);
+    } catch (error) {
+      if (!isDatabaseUnavailable(error)) throw error;
+      markDatabaseUnavailable();
+    }
+  }
+
+  const accounts = await readStoredAccounts();
+  const existing = accounts.find((account) => account.googleSubject === input.subject || normalizeEmail(account.email) === email);
+  if (existing) {
+    existing.googleSubject = input.subject;
+    existing.emailVerified = true;
+    existing.name = input.name.trim() || existing.name;
+    await writeStoredAccounts(accounts);
+    return toAuthUser(existing);
+  }
+
+  const account: StoredAccount = {
+    id: crypto.randomUUID(),
+    googleSubject: input.subject,
+    name: input.name.trim() || email.split("@")[0],
+    email,
+    emailVerified: true,
+    role: "CUSTOMER",
+  };
+  await writeStoredAccounts([...accounts, account]);
+  return toAuthUser(account);
+}
 
 const SESSION_COOKIE = "cicekci_session";
 const ACCOUNTS_COOKIE = "cicekci_accounts";

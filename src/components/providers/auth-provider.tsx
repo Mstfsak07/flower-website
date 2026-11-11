@@ -35,6 +35,7 @@ type AuthContextValue = {
   loading: boolean;
   isAuthenticated: boolean;
   login: (input: LoginInput) => Promise<AuthResponse>;
+  loginWithGoogle: (credential: string) => Promise<AuthResponse>;
   logout: () => Promise<void>;
   register: (input: RegisterInput) => Promise<AuthResponse>;
 };
@@ -139,6 +140,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return authData;
   }
 
+  async function loginWithGoogle(credential: string) {
+    const response = await fetch("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ credential }),
+    });
+    const body = await readJson<{ data?: AuthResponse; message?: string }>(response);
+    if (!response.ok || !body.data) {
+      throw new Error(body.message ?? "Google ile giriş başarısız.");
+    }
+    setUser(body.data.user);
+    persistUser(body.data.user);
+    window.location.assign(body.data.redirectTo);
+    return body.data;
+  }
+
   async function logout() {
     await fetch("/api/auth/logout", {
       method: "POST",
@@ -157,6 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: Boolean(user),
         loading,
         login,
+        loginWithGoogle,
         logout,
         register,
         user,

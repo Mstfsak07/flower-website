@@ -1,2 +1,3 @@
 import { StorefrontPage } from "@/components/botanical/catalog";
-export default StorefrontPage;
+import { getLocale } from "@/lib/i18n";
+export default async function ShopPage(){ return <StorefrontPage locale={await getLocale()}/>; }

@@ -13,7 +13,7 @@ export function LanguageSwitcher({ currentLocale, label }: LanguageSwitcherProps
   return (
     <div
       aria-label={label}
-      className="inline-flex items-center gap-1 rounded-full border border-[rgba(212,175,55,0.28)] bg-[rgba(10,10,10,0.62)] p-1.5 shadow-[0_18px_50px_-22px_rgba(0,0,0,0.65)] backdrop-blur-xl"
+      className="inline-flex items-center gap-1 rounded-full border border-[#d9ccc3] bg-[#fffdfa]/95 p-1.5 shadow-lg backdrop-blur-xl"
       role="group"
     >
       {locales.map((locale) => {
@@ -23,8 +23,8 @@ export function LanguageSwitcher({ currentLocale, label }: LanguageSwitcherProps
           <button
             className={
               active
-                ? "rounded-full bg-[#d4af37] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-black"
-                : "rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#e8dbb0] transition hover:bg-white/10 hover:text-white"
+                ? "rounded-full bg-[#aa2e28] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-white"
+                : "rounded-full px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#625d57] transition hover:bg-[#f1e9e3]"
             }
             key={locale}
             onClick={() => {

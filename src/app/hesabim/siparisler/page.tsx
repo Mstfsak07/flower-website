@@ -1,2 +1,3 @@
 import { OrdersPage } from "@/components/botanical/commerce-pages";
-export default OrdersPage;
+import { getLocale } from "@/lib/i18n";
+export default async function AccountOrdersPage(){ return <OrdersPage locale={await getLocale()}/>; }

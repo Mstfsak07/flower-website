@@ -249,6 +249,24 @@ const productTranslations: Partial<Record<Product["slug"], Pick<Product, "name" 
     shortDescription: "A showstopping special-occasion bouquet of 25 red roses.",
     description: enDefaultDescription,
   },
+  "kaleci-romansi-kirmizi-gul": { name: "Goalkeeper's Romance · 15 Red Roses", shortDescription: "Fifteen passionate red roses with eucalyptus.", description: enDefaultDescription },
+  "lara-pembesi-sakayik-aranjmani": { name: "Lara Blush Peony Arrangement", shortDescription: "A romantic edit of pastel peonies, lisianthus and eucalyptus.", description: enDefaultDescription },
+  "beyaz-inci-cift-kandilli-orkide": { name: "White Pearl Double Orchid", shortDescription: "A double-stem white orchid in an elegant ceramic pot.", description: enDefaultDescription },
+  "akdeniz-gunesi-papatya-demeti": { name: "Mediterranean Sun Daisy Bouquet", shortDescription: "Fresh seasonal daisies and greenery in natural kraft wrap.", description: enDefaultDescription },
+  "kutuda-solmayan-kirmizi-ask-gulleri": { name: "Preserved Red Love Roses", shortDescription: "Long-lasting red roses in an elegant gift box.", description: enDefaultDescription },
+  "konyaalti-meltemi-mor-lisyanthus": { name: "Konyaaltı Breeze Purple Lisianthus", shortDescription: "Graceful purple lisianthus tied with a silk ribbon.", description: enDefaultDescription },
+  "antalya-gunbatimi-seftali-gul-buketi": { name: "Antalya Sunset Peach Rose Bouquet", shortDescription: "Peach garden roses, lisianthus and eucalyptus.", description: enDefaultDescription },
+  "beyaz-zambak-kazablanka-sepeti": { name: "White Lily & Casablanca Basket", shortDescription: "Casablanca lilies and seasonal greens in a woven basket.", description: enDefaultDescription },
+  "riva-royal-velvet-kutusu": { name: "Riva Royal Velvet Box", shortDescription: "Twenty-five red roses and eucalyptus in a velvet box.", description: enDefaultDescription },
+  "akdeniz-meltemi-seramik-vazo": { name: "Mediterranean Breeze Ceramic Vase", shortDescription: "Lisianthus and peach roses in handmade ceramic.", description: enDefaultDescription },
+  "toros-bahcesi-ahsap-kasa": { name: "Taurus Garden Wooden Crate", shortDescription: "A rustic seasonal arrangement in a natural wooden crate.", description: enDefaultDescription },
+  "sonsuz-ask-cam-fanus": { name: "Eternal Love Glass Dome", shortDescription: "A preserved red rose that stays beautiful for years.", description: enDefaultDescription },
+  "kir-nesesi-orme-sepet": { name: "Meadow Joy Woven Basket", shortDescription: "Fresh daisies and seasonal greens in a woven basket.", description: enDefaultDescription },
+  "kalici-zarafeti-luks-kutu": { name: "Timeless Elegance Luxury Box", shortDescription: "Thirty premium cream and blush roses in a luxury box.", description: enDefaultDescription },
+  "kalpli-artisan-cikolata": { name: "Heart-Shaped Artisan Chocolates", shortDescription: "A romantic heart box filled with handcrafted chocolates.", description: enDefaultDescription },
+  "yenilebilir-cicek-buketi": { name: "Edible Flower Bouquet", shortDescription: "An elegant gift bouquet made from food-safe edible flowers.", description: enDefaultDescription },
+  "iki-kisilik-kalpli-kek": { name: "Heart Cake for Two", shortDescription: "A boutique red velvet cake with cream rosettes.", description: enDefaultDescription },
+  "altin-kalpli-fotograf-cercevesi": { name: "Golden Heart Photo Frame", shortDescription: "A romantic tabletop frame that keeps the moment alive.", description: enDefaultDescription },
 };
 
 export function getLocalizedCategory(category: Category, locale: Locale): Category {
@@ -307,6 +325,17 @@ function translateProductBadge(value: string) {
     Mevsimsel: "Seasonal",
     "Uzun Omurlu": "Long Lasting",
     Zarif: "Elegant",
+    "Bugün Teslim": "Delivery Today",
+    "En Çok Satan": "Best Seller",
+    "Uzun Ömürlü": "Long Lasting",
+    "Aynı Gün": "Same Day",
+    "Taze Kesim": "Fresh Cut",
+    "Sepete Özel": "Cart Exclusive",
+    "El Yapımı": "Handmade",
+    Yeni: "New",
+    Yenilebilir: "Edible",
+    Hediye: "Gift",
+    Sınırlı: "Limited",
   };
 
   return translations[value] ?? value;
@@ -317,6 +346,7 @@ function translateProductOptionName(value: string) {
     Boyut: "Size",
     "Kart Ekle": "Add Card",
     "Kurdele Rengi": "Ribbon Color",
+    "Buket Kağıdı": "Bouquet Wrap",
   };
 
   return translations[value] ?? value;
@@ -330,6 +360,10 @@ function translateProductOptionValue(value: string) {
     Krem: "Cream",
     Kucuk: "Small",
     Orta: "Medium",
+    "Doğal Kraft": "Natural Kraft",
+    "Krem Dokulu": "Textured Cream",
+    "Pudra Pembe": "Blush Pink",
+    "Mat Siyah": "Matte Black",
   };
 
   return translations[value] ?? value;
@@ -425,6 +459,18 @@ function product(
         name: "Kart Ekle",
         type: "BOOLEAN",
         isRequired: false,
+      },
+      {
+        id: `${id}-opt-wrap`,
+        name: "Buket Kağıdı",
+        type: "SELECT",
+        isRequired: false,
+        values: [
+          { id: `${id}-kraft`, value: "Doğal Kraft", priceDelta: 0 },
+          { id: `${id}-cream-wrap`, value: "Krem Dokulu", priceDelta: 25 },
+          { id: `${id}-rose-wrap`, value: "Pudra Pembe", priceDelta: 25 },
+          { id: `${id}-black-wrap`, value: "Mat Siyah", priceDelta: 35 },
+        ],
       },
     ],
     deliveryZoneIds: ["zone-1", "zone-2", "zone-3", ...antalyaDeliveryZoneIds],
@@ -765,6 +811,10 @@ export const products: Product[] = [
   product("p12", "Sonsuz Aşk Cam Fanus", "sonsuz-ask-cam-fanus", "cat-solmayan-guller", 850, undefined, "/stitch-pages/arrangements-04.jpg", "Cam fanusta üç yıl canlılığını koruyan kırmızı solmayan gül.", ["3 Yıl Garantili", "Solmayan"]),
   product("p13", "Kır Neşesi Örme Sepet", "kir-nesesi-orme-sepet", "cat-aranjmanlar", 450, undefined, "/stitch-pages/arrangements-05.jpg", "Taze papatyalar ve mevsim yeşillikleriyle hazırlanan hasır sepet aranjmanı.", ["Taze Hasat", "Hasır Sepet"]),
   product("p14", "Kalıcı Zarafeti Lüks Kutu", "kalici-zarafeti-luks-kutu", "cat-aranjmanlar", 1150, undefined, "/stitch-pages/arrangements-06.jpg", "Mermer desenli kutuda 30 adet beyaz ve pudra tonlu premium gül.", ["Özel Koleksiyon", "Lüks Kutu"]),
+  product("p15", "Kalpli Artisan Çikolata", "kalpli-artisan-cikolata", "cat-hediyeler", 320, undefined, "/addons/heart-chocolates.png", "El yapımı dolgulu çikolatalardan romantik kalp kutu.", ["Sepete Özel", "El Yapımı"]),
+  product("p16", "Yenilebilir Çiçek Buketi", "yenilebilir-cicek-buketi", "cat-hediyeler", 390, undefined, "/addons/edible-flowers.png", "Gıda uyumlu yenilebilir çiçeklerden hazırlanan zarif hediye buketi.", ["Yeni", "Yenilebilir"]),
+  product("p17", "İki Kişilik Kalpli Kek", "iki-kisilik-kalpli-kek", "cat-hediyeler", 420, undefined, "/addons/heart-cake.png", "Krem rozetleri ve yenilebilir yapraklarla süslenen butik red velvet kek.", ["Sepete Özel", "Taze"]),
+  product("p18", "Altın Kalpli Fotoğraf Çerçevesi", "altin-kalpli-fotograf-cercevesi", "cat-hediyeler", 280, undefined, "/addons/heart-frame.png", "Buketinize kalıcı bir hatıra ekleyen romantik masa çerçevesi.", ["Hediye", "Sınırlı"]),
 ];
 
 export const featuredProducts = products.filter((product) => product.isFeatured);

@@ -22,7 +22,7 @@ export function LayoutChrome({ currentLocale, area = "header", languageLabel }: 
 
   if (area === "language") {
     return (
-      <div className="fixed bottom-6 right-6 z-[70]">
+      <div className="fixed right-3 top-24 z-[70] lg:bottom-6 lg:right-6 lg:top-auto">
         <LanguageSwitcher currentLocale={currentLocale} label={languageLabel ?? "Dil"} />
       </div>
     );
